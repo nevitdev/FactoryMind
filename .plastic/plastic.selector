@@ -1,0 +1,4 @@
+repository "FactoryMind/FactoryMind@4673237082314@cloud"
+  path "/"
+    br "/main"
+    co "/main"
