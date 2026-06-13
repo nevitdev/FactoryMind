@@ -3,6 +3,7 @@ using UnityEngine;
 public class RobotController : MonoBehaviour
 {
     public float moveSpeed = 5f;
+    public float interactDistance = 1.5f;
 
     private Vector3 targetPosition;
     private bool isMoving = false;
@@ -29,6 +30,11 @@ public class RobotController : MonoBehaviour
                 Move(Vector3.right);
         }
 
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            Interact();
+        }
+
         if (isMoving)
         {
             transform.position = Vector3.MoveTowards(
@@ -46,13 +52,44 @@ public class RobotController : MonoBehaviour
     }
 
     private void Move(Vector3 direction)
-{
-    targetPosition += direction;
+    {
+        targetPosition += direction;
 
-    transform.rotation =
-        Quaternion.LookRotation(direction) *
-        Quaternion.Euler(0, 180, 0);
+        transform.rotation =
+            Quaternion.LookRotation(direction) *
+            Quaternion.Euler(0, 180, 0);
 
-    isMoving = true;
-}
+        isMoving = true;
+    }
+
+    private void Interact()
+    {
+        Collider[] nearbyObjects =
+            Physics.OverlapSphere(transform.position, interactDistance);
+
+        foreach (Collider obj in nearbyObjects)
+        {
+            ResourceNode resource =
+                obj.GetComponent<ResourceNode>();
+
+            if (resource != null)
+            {
+                Debug.Log("Recolectaste " + resource.resourceName);
+                return;
+            }
+        }
+
+        Inventory inventory =
+    GetComponent<Inventory>();
+
+        if (resource.Harvest())
+        {
+            inventory.AddResource(resource.resourceName);
+
+            Debug.Log(
+                "Recolectaste " +
+                resource.resourceName
+            );
+        }
+    }
 }
