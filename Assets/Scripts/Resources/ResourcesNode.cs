@@ -12,6 +12,18 @@ public class ResourceNode : MonoBehaviour
 
         amount--;
 
+        Debug.Log(
+            resourceName +
+            " restante: " +
+            amount
+        );
+
+        if (amount <= 0)
+        {
+            Debug.Log(resourceName + " destruido");
+            Destroy(gameObject);
+        }
+
         return true;
     }
 }

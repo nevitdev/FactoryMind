@@ -7,6 +7,7 @@ public class RobotController : MonoBehaviour
 
     private Vector3 targetPosition;
     private bool isMoving = false;
+    private float lastInteractTime;
 
     private void Start()
     {
@@ -64,8 +65,14 @@ public class RobotController : MonoBehaviour
 
     private void Interact()
     {
+        if (Time.time - lastInteractTime < 0.5f)
+            return;
+
+        lastInteractTime = Time.time;
         Collider[] nearbyObjects =
             Physics.OverlapSphere(transform.position, interactDistance);
+
+        Inventory inventory = GetComponent<Inventory>();
 
         foreach (Collider obj in nearbyObjects)
         {
@@ -74,22 +81,20 @@ public class RobotController : MonoBehaviour
 
             if (resource != null)
             {
-                Debug.Log("Recolectaste " + resource.resourceName);
+                if (resource.Harvest())
+                {
+                    inventory.AddResource(resource.resourceName);
+
+                    Debug.Log(
+                        "Recolectaste " +
+                        resource.resourceName
+                    );
+                }
+
                 return;
             }
         }
 
-        Inventory inventory =
-    GetComponent<Inventory>();
-
-        if (resource.Harvest())
-        {
-            inventory.AddResource(resource.resourceName);
-
-            Debug.Log(
-                "Recolectaste " +
-                resource.resourceName
-            );
-        }
+        Debug.Log("No hay recursos cerca");
     }
 }
