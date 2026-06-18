@@ -3,7 +3,7 @@ using UnityEngine;
 public class MinerMk1 : MonoBehaviour
 {
     public ResourceNode targetNode;
-    public Inventory inventory;
+    public StorageBox storage;
 
     public float productionInterval = 3f;
 
@@ -11,9 +11,14 @@ public class MinerMk1 : MonoBehaviour
 
     private void Update()
     {
+        if (storage == null)
+        {
+            Debug.LogError("Storage no asignado");
+            return;
+        }
+
         if (targetNode == null)
         {
-            Debug.Log("Nodo agotado");
             return;
         }
 
@@ -25,7 +30,7 @@ public class MinerMk1 : MonoBehaviour
 
             if (targetNode.Harvest())
             {
-                inventory.AddResource(
+                storage.AddResource(
                     targetNode.resourceName
                 );
 
@@ -33,6 +38,11 @@ public class MinerMk1 : MonoBehaviour
                     "MinerMk1 produjo " +
                     targetNode.resourceName
                 );
+            }
+            else
+            {
+                Debug.Log("Nodo agotado");
+                targetNode = null;
             }
         }
     }

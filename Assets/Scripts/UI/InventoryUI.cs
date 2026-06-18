@@ -9,6 +9,7 @@ public class InventoryUI : MonoBehaviour
     private void Update()
     {
         inventoryText.text =
+            "ROBOT\n\n" +
             $"Iron: {inventory.iron}\n" +
             $"Copper: {inventory.copper}\n" +
             $"Coal: {inventory.coal}";
