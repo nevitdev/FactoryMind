@@ -9,6 +9,53 @@ public class MinerMk1 : MonoBehaviour
 
     private float timer;
 
+    private void Start()
+    {
+        if (storage == null)
+            storage = FindFirstObjectByType<StorageBox>();
+
+        if (targetNode == null)
+            targetNode = FindClosestNode();
+
+        if (targetNode != null)
+        {
+            Debug.Log(
+                gameObject.name +
+                " encontró nodo: " +
+                targetNode.resourceName
+            );
+        }
+    }
+
+
+    private ResourceNode FindClosestNode()
+    {
+        ResourceNode[] nodes =
+            FindObjectsByType<ResourceNode>(
+                FindObjectsSortMode.None
+            );
+
+        ResourceNode closestNode = null;
+        float closestDistance = Mathf.Infinity;
+
+        foreach (ResourceNode node in nodes)
+        {
+            float distance =
+                Vector3.Distance(
+                    transform.position,
+                    node.transform.position
+                );
+
+            if (distance < closestDistance)
+            {
+                closestDistance = distance;
+                closestNode = node;
+            }
+        }
+
+        return closestNode;
+    }
+
     private void Update()
     {
         if (storage == null)
@@ -23,6 +70,11 @@ public class MinerMk1 : MonoBehaviour
         }
 
         timer += Time.deltaTime;
+
+        if (!storage.HasSpace(targetNode.resourceName))
+        {
+            return;
+        }
 
         if (timer >= productionInterval)
         {

@@ -53,6 +53,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: f931faa6024cc5e45a51d5ce633ea417, type: 3}
+      propertyPath: m_Icon
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: f931faa6024cc5e45a51d5ce633ea417, type: 3}
       propertyPath: m_Name
       value: FM01_Robot
       objectReference: {fileID: 0}

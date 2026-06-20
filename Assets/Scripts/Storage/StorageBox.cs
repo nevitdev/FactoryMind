@@ -6,8 +6,34 @@ public class StorageBox : MonoBehaviour
     public int copper;
     public int coal;
 
+    public int maxCapacity = 10;
+
+    public bool HasSpace(string resourceName)
+    {
+        switch (resourceName)
+        {
+            case "Iron":
+                return iron < maxCapacity;
+
+            case "Copper":
+                return copper < maxCapacity;
+
+            case "Coal":
+                return coal < maxCapacity;
+
+            default:
+                return false;
+        }
+    }
+
     public void AddResource(string resourceName)
     {
+        if (!HasSpace(resourceName))
+        {
+            Debug.Log(resourceName + " lleno");
+            return;
+        }
+
         switch (resourceName)
         {
             case "Iron":
