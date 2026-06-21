@@ -6,6 +6,8 @@ public class StorageBox : MonoBehaviour
     public int copper;
     public int coal;
 
+    public int ironIngot;
+
     public int maxCapacity = 10;
 
     public bool HasSpace(string resourceName)
@@ -51,6 +53,25 @@ public class StorageBox : MonoBehaviour
 
         Debug.Log(
             $"Storage -> Iron:{iron} Copper:{copper} Coal:{coal}"
+        );
+    }
+
+    public bool RemoveIron(int amount)
+    {
+        if (iron < amount)
+            return false;
+
+        iron -= amount;
+        return true;
+    }
+
+    public void AddIronIngot()
+    {
+        ironIngot++;
+
+        Debug.Log(
+            "Iron Ingots: " +
+            ironIngot
         );
     }
 }

@@ -12,6 +12,6 @@ public class InventoryUI : MonoBehaviour
             "ROBOT\n\n" +
             $"Iron: {inventory.iron}\n" +
             $"Copper: {inventory.copper}\n" +
-            $"Coal: {inventory.coal}";
+            $"Coal: {inventory.coal}\n";
     }
 }
