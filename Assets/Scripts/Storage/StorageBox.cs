@@ -7,6 +7,7 @@ public class StorageBox : MonoBehaviour
     public int coal;
 
     public int ironIngot;
+    public int copperIngot;
 
     public int maxCapacity = 10;
 
@@ -49,6 +50,10 @@ public class StorageBox : MonoBehaviour
             case "Coal":
                 coal++;
                 break;
+
+            case "Copper Ingot":
+                copperIngot++;
+                break;
         }
 
         Debug.Log(
@@ -56,14 +61,7 @@ public class StorageBox : MonoBehaviour
         );
     }
 
-    public bool RemoveIron(int amount)
-    {
-        if (iron < amount)
-            return false;
 
-        iron -= amount;
-        return true;
-    }
 
     public void AddIronIngot()
     {
@@ -73,5 +71,35 @@ public class StorageBox : MonoBehaviour
             "Iron Ingots: " +
             ironIngot
         );
+    }
+    public bool HasIron(int amount)
+    {
+        return iron >= amount;
+    }
+
+
+    public bool RemoveIron(int amount)
+    {
+        Debug.Log(
+            "Iron disponible: " +
+            iron
+        );
+
+        Debug.Log(
+            "Costo: " +
+            amount
+        );
+
+        if (iron < amount)
+            return false;
+
+        iron -= amount;
+
+        Debug.Log(
+            "Iron restante: " +
+            iron
+        );
+
+        return true;
     }
 }

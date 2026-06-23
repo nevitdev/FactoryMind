@@ -11,6 +11,15 @@ public class BuildManager : MonoBehaviour
 
     public BuildUI buildUI;
 
+    public StorageBox storage;
+
+    public int storageCost = 3;
+    public int minerCost = 5;
+    public int smelterCost = 10;
+    public int conveyorCost = 2;
+
+    public GameObject conveyorPrefab;
+
     private void Start()
     {
         selectedBuilding = minerPrefab;
@@ -18,6 +27,16 @@ public class BuildManager : MonoBehaviour
         buildUI.UpdateSelectedBuilding(
             "Miner Mk1"
         );
+
+        if (storage == null)
+        {
+            storage =
+                FindFirstObjectByType<StorageBox>();
+        }
+        Debug.Log(
+    "Storage usado: " +
+    storage.name
+);
     }
 
     private void Update()
@@ -49,6 +68,15 @@ public class BuildManager : MonoBehaviour
             );
         }
 
+        if (Input.GetKeyDown(KeyCode.Alpha4))
+        {
+            selectedBuilding = conveyorPrefab;
+
+            buildUI.UpdateSelectedBuilding(
+                "Conveyor Mk1"
+            );
+        }
+
         if (Input.GetKeyDown(KeyCode.B))
         {
             buildMode = !buildMode;
@@ -77,11 +105,52 @@ public class BuildManager : MonoBehaviour
             ray,
             out RaycastHit hit))
         {
+            int cost = GetBuildCost();
+            Debug.Log(
+    "Iron actual: " +
+    storage.iron
+);
+
+            Debug.Log(
+                "Costo edificio: " +
+                cost
+            );
+
+            Debug.Log(
+                "Edificio seleccionado: " +
+                selectedBuilding.name
+            );
+
+            if (!storage.RemoveIron(cost))
+            {
+                Debug.Log(
+                    "No hay suficiente Iron"
+                );
+
+                return;
+            }
+
             Instantiate(
                 selectedBuilding,
                 hit.point,
                 Quaternion.identity
             );
         }
+    }
+    private int GetBuildCost()
+    {
+        if (selectedBuilding == storagePrefab)
+            return storageCost;
+
+        if (selectedBuilding == minerPrefab)
+            return minerCost;
+
+        if (selectedBuilding == smelterPrefab)
+            return smelterCost;
+
+        if (selectedBuilding == conveyorPrefab)
+            return conveyorCost;
+
+        return 0;
     }
 }

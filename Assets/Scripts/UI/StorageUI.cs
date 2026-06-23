@@ -13,6 +13,7 @@ public class StorageUI : MonoBehaviour
             "Iron: " + storage.iron + "\n" +
             "Copper: " + storage.copper + "\n" +
             "Coal: " + storage.coal + "\n"  +
-            "Iron Ingot: " + storage.ironIngot + "\n";
+            "Iron Ingot: " + storage.ironIngot + "\n" +
+            "Copper Ingot: " + storage.copperIngot + "\n";
     }
 }

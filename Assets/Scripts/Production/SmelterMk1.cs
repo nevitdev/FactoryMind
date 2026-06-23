@@ -28,12 +28,24 @@ public class SmelterMk1 : MonoBehaviour
         {
             timer = 0f;
 
-            if (storage.RemoveIron(1))
+            if (storage.iron > 0)
             {
+                storage.RemoveIron(1);
+
                 storage.AddIronIngot();
 
                 Debug.Log(
                     "Smelter produjo 1 Iron Ingot"
+                );
+            }
+            else if (storage.copper > 0)
+            {
+                storage.copper--;
+
+                storage.copperIngot++;
+
+                Debug.Log(
+                    "Smelter produjo 1 Copper Ingot"
                 );
             }
         }
