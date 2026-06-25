@@ -31,7 +31,7 @@ public class BuildManager : MonoBehaviour
         if (storage == null)
         {
             storage =
-                FindFirstObjectByType<StorageBox>();
+                GameStorage.Instance.storage;
         }
         Debug.Log(
     "Storage usado: " +
