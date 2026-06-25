@@ -12,7 +12,7 @@ public class MinerMk1 : MonoBehaviour
     private void Start()
     {
         if (storage == null)
-            storage = FindFirstObjectByType<StorageBox>();
+            storage = GameStorage.Instance.storage;
 
         if (targetNode == null)
             targetNode = FindClosestNode();

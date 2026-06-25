@@ -13,7 +13,7 @@ public class SmelterMk1 : MonoBehaviour
         if (storage == null)
         {
             storage =
-                FindFirstObjectByType<StorageBox>();
+                GameStorage.Instance.storage;
         }
     }
 
