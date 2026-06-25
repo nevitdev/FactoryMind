@@ -6,11 +6,13 @@ public class BuildUI : MonoBehaviour
     public TextMeshProUGUI buildText;
 
     public void UpdateSelectedBuilding(
-        string buildingName)
+    string buildingName,
+    int cost)
     {
         buildText.text =
-            "BUILD MODE\n\n" +
             "Selected:\n" +
-            buildingName;
+            buildingName +
+            "\n\nCost:\n" +
+            cost + " Iron";
     }
 }

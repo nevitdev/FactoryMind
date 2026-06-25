@@ -25,7 +25,8 @@ public class BuildManager : MonoBehaviour
         selectedBuilding = minerPrefab;
 
         buildUI.UpdateSelectedBuilding(
-            "Miner Mk1"
+            "Miner Mk1",
+            minerCost
         );
 
         if (storage == null)
@@ -46,7 +47,8 @@ public class BuildManager : MonoBehaviour
             selectedBuilding = storagePrefab;
 
             buildUI.UpdateSelectedBuilding(
-                "Storage"
+                "Storage",
+                storageCost
             );
         }
 
@@ -55,7 +57,8 @@ public class BuildManager : MonoBehaviour
             selectedBuilding = minerPrefab;
 
             buildUI.UpdateSelectedBuilding(
-                "Miner Mk1"
+                "Miner Mk1",
+                minerCost
             );
         }
 
@@ -64,7 +67,8 @@ public class BuildManager : MonoBehaviour
             selectedBuilding = smelterPrefab;
 
             buildUI.UpdateSelectedBuilding(
-                "Smelter Mk1"
+                "Smelter Mk1",
+                smelterCost
             );
         }
 
@@ -73,7 +77,9 @@ public class BuildManager : MonoBehaviour
             selectedBuilding = conveyorPrefab;
 
             buildUI.UpdateSelectedBuilding(
-                "Conveyor Mk1"
+                "Conveyor Mk1",
+                conveyorCost
+
             );
         }
 
