@@ -8,6 +8,8 @@ public class SmelterMk1 : MonoBehaviour
 
     private float timer;
 
+    public RecipeType recipe = RecipeType.Iron;
+
     private void Start()
     {
         if (storage == null)
@@ -28,25 +30,32 @@ public class SmelterMk1 : MonoBehaviour
         {
             timer = 0f;
 
-            if (storage.iron > 0)
+            if (recipe == RecipeType.Iron)
             {
-                storage.RemoveIron(1);
+                if (storage.iron > 0)
+                {
+                    storage.RemoveIron(1);
 
-                storage.AddIronIngot();
+                    storage.AddIronIngot();
 
-                Debug.Log(
-                    "Smelter produjo 1 Iron Ingot"
-                );
+                    Debug.Log(
+                        "Smelter produjo 1 Iron Ingot"
+                    );
+                }
             }
-            else if (storage.copper > 0)
+
+            if (recipe == RecipeType.Copper)
             {
-                storage.copper--;
+                if (storage.copper > 0)
+                {
+                    storage.copper--;
 
-                storage.copperIngot++;
+                    storage.copperIngot++;
 
-                Debug.Log(
-                    "Smelter produjo 1 Copper Ingot"
-                );
+                    Debug.Log(
+                        "Smelter produjo 1 Copper Ingot"
+                    );
+                }
             }
         }
     }

@@ -1838,6 +1838,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: StorageBox
       objectReference: {fileID: 0}
+    - target: {fileID: 4999630343907420078, guid: e480fdc5fd97cbc45b42fcc80f5375e9, type: 3}
+      propertyPath: iron
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1851,6 +1855,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 367529348044153603, guid: b9d695187b20fd840aa7af6f9c585fdf, type: 3}
+      propertyPath: recipe
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2789094240695441153, guid: b9d695187b20fd840aa7af6f9c585fdf, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
