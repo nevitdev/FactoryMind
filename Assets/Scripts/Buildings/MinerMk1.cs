@@ -1,5 +1,5 @@
 using UnityEngine;
-
+// Produce recursos desde un ResourceNode
 public class MinerMk1 : MonoBehaviour
 {
     public ResourceNode targetNode;

@@ -1,24 +1,33 @@
 using UnityEngine;
+// Gestiona la construcción de edificios
 
 public class BuildManager : MonoBehaviour
 {
+
+    [Header("Prefabs")]
     public GameObject storagePrefab;
     public GameObject minerPrefab;
     public GameObject smelterPrefab;
+    public GameObject conveyorPrefab;
 
-    private GameObject selectedBuilding;
-    private bool buildMode;
-
+    [Header("UI")]
     public BuildUI buildUI;
 
-    public StorageBox storage;
-
+    [Header("Building Costs")]
     public int storageCost = 3;
     public int minerCost = 5;
     public int smelterCost = 10;
     public int conveyorCost = 2;
 
-    public GameObject conveyorPrefab;
+    
+
+    private GameObject selectedBuilding;
+    private bool buildMode;
+    public StorageBox storage;
+    private StorageBox Storage => GameStorage.Instance.storage;
+
+  
+
 
     private void Start()
     {

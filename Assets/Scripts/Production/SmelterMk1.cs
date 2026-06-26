@@ -1,9 +1,14 @@
 using UnityEngine;
-
+// Convierte minerales en lingotes
 public class SmelterMk1 : MonoBehaviour
 {
-    public StorageBox storage;
-
+    private StorageBox Storage
+    {
+        get
+        {
+            return GameStorage.Instance.storage;
+        }
+    }
     public float productionInterval = 5f;
 
     private float timer;
@@ -12,16 +17,16 @@ public class SmelterMk1 : MonoBehaviour
 
     private void Start()
     {
-        if (storage == null)
+        if (Storage == null)
         {
-            storage =
+            Storage =
                 GameStorage.Instance.storage;
         }
     }
 
     private void Update()
     {
-        if (storage == null)
+        if (Storage == null)
             return;
 
         timer += Time.deltaTime;
@@ -32,11 +37,11 @@ public class SmelterMk1 : MonoBehaviour
 
             if (recipe == RecipeType.Iron)
             {
-                if (storage.iron > 0)
+                if (Storage.iron > 0)
                 {
-                    storage.RemoveIron(1);
+                    Storage.RemoveIron(1);
 
-                    storage.AddIronIngot();
+                    Storage.AddIronIngot();
 
                     Debug.Log(
                         "Smelter produjo 1 Iron Ingot"
@@ -46,11 +51,11 @@ public class SmelterMk1 : MonoBehaviour
 
             if (recipe == RecipeType.Copper)
             {
-                if (storage.copper > 0)
+                if (Storage.copper > 0)
                 {
-                    storage.copper--;
+                    Storage.copper--;
 
-                    storage.copperIngot++;
+                    Storage.copperIngot++;
 
                     Debug.Log(
                         "Smelter produjo 1 Copper Ingot"
