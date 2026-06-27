@@ -9,6 +9,7 @@ public class BuildManager : MonoBehaviour
     public GameObject minerPrefab;
     public GameObject smelterPrefab;
     public GameObject conveyorPrefab;
+    public GameObject generatorPrefab;
 
     [Header("UI")]
     public BuildUI buildUI;
@@ -18,17 +19,14 @@ public class BuildManager : MonoBehaviour
     public int minerCost = 5;
     public int smelterCost = 10;
     public int conveyorCost = 2;
+    public int generatorCost = 15;
 
-    
 
     private GameObject selectedBuilding;
     private bool buildMode;
     public StorageBox storage;
     private StorageBox Storage => GameStorage.Instance.storage;
-
-  
-
-
+        
     private void Start()
     {
         selectedBuilding = minerPrefab;
@@ -92,6 +90,17 @@ public class BuildManager : MonoBehaviour
             );
         }
 
+        if (Input.GetKeyDown(KeyCode.Alpha5))
+        {
+            selectedBuilding = generatorPrefab;
+
+            buildUI.UpdateSelectedBuilding(
+                "Coal Generator",
+                generatorCost
+
+            );
+        }
+
         if (Input.GetKeyDown(KeyCode.B))
         {
             buildMode = !buildMode;
@@ -122,9 +131,9 @@ public class BuildManager : MonoBehaviour
         {
             int cost = GetBuildCost();
             Debug.Log(
-    "Iron actual: " +
-    storage.iron
-);
+                "Iron actual: " +
+                 storage.iron
+                );
 
             Debug.Log(
                 "Costo edificio: " +
@@ -165,6 +174,9 @@ public class BuildManager : MonoBehaviour
 
         if (selectedBuilding == conveyorPrefab)
             return conveyorCost;
+
+        if (selectedBuilding == generatorPrefab)
+            return generatorCost;
 
         return 0;
     }
