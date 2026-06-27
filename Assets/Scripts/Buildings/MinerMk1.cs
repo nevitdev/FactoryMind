@@ -58,6 +58,9 @@ public class MinerMk1 : MonoBehaviour
 
     private void Update()
     {
+        if (!PowerManager.Instance.hasPower)
+            return;
+
         if (storage == null)
         {
             Debug.LogError("Storage no asignado");

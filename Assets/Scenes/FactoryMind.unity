@@ -646,6 +646,7 @@ Transform:
   - {fileID: 1662004224}
   - {fileID: 1668402196}
   - {fileID: 1001672407}
+  - {fileID: 2020557672}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &872150688 stripped
@@ -1969,13 +1970,13 @@ MonoBehaviour:
   storagePrefab: {fileID: 872150688}
   minerPrefab: {fileID: 1264282946461300198, guid: 80f48af138b2edf4ab8a5a0ef17f463f, type: 3}
   smelterPrefab: {fileID: 34206998}
+  conveyorPrefab: {fileID: 9172489929782490767, guid: e1217952da13e7148988130debe832cd, type: 3}
   buildUI: {fileID: 1064912953}
-  storage: {fileID: 0}
   storageCost: 3
   minerCost: 5
   smelterCost: 10
   conveyorCost: 2
-  conveyorPrefab: {fileID: 9172489929782490767, guid: e1217952da13e7148988130debe832cd, type: 3}
+  storage: {fileID: 0}
 --- !u!4 &1846803505
 Transform:
   m_ObjectHideFlags: 0
@@ -2038,6 +2039,51 @@ MonoBehaviour:
   iron: 0
   copper: 0
   coal: 0
+--- !u!1 &2020557671
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2020557672}
+  - component: {fileID: 2020557673}
+  m_Layer: 0
+  m_Name: PowerManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2020557672
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2020557671}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 853946437}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2020557673
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2020557671}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9c86c4a38abb87946b284a2a1aa2960f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PowerManager
+  hasPower: 1
 --- !u!1 &2051942334
 GameObject:
   m_ObjectHideFlags: 0

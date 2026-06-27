@@ -15,17 +15,13 @@ public class SmelterMk1 : MonoBehaviour
 
     public RecipeType recipe = RecipeType.Iron;
 
-    private void Start()
-    {
-        if (Storage == null)
-        {
-            Storage =
-                GameStorage.Instance.storage;
-        }
-    }
+    
 
     private void Update()
     {
+        if (!PowerManager.Instance.hasPower)
+            return;
+
         if (Storage == null)
             return;
 

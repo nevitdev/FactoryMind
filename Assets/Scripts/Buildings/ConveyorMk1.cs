@@ -20,6 +20,9 @@ public class ConveyorMk1 : MonoBehaviour
 
     private void Update()
     {
+        if (!PowerManager.Instance.hasPower)
+            return;
+
         if (storage == null)
             return;
 
