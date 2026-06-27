@@ -15,12 +15,19 @@ public class SmelterMk1 : MonoBehaviour
 
     public RecipeType recipe = RecipeType.Iron;
 
-    
+    public int powerUsage = 20;
 
     private void Update()
     {
         if (!PowerManager.Instance.hasPower)
             return;
+
+        if (PowerManager.Instance.AvailablePower() < powerUsage)
+        {
+            return;
+        }
+
+        PowerManager.Instance.ConsumePower(powerUsage);
 
         if (Storage == null)
             return;

@@ -9,6 +9,8 @@ public class MinerMk1 : MonoBehaviour
 
     private float timer;
 
+    public int powerUsage = 10;
+
     private void Start()
     {
         if (storage == null)
@@ -60,6 +62,13 @@ public class MinerMk1 : MonoBehaviour
     {
         if (!PowerManager.Instance.hasPower)
             return;
+
+        if (PowerManager.Instance.AvailablePower() < powerUsage)
+        {
+            return;
+        }
+
+        PowerManager.Instance.ConsumePower(powerUsage); 
 
         if (storage == null)
         {

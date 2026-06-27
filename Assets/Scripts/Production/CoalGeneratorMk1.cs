@@ -23,13 +23,13 @@ public class CoalGeneratorMk1 : MonoBehaviour
             {
                 storage.coal--;
 
-                PowerManager.Instance.hasPower = true;
+                PowerManager.Instance.totalPower = 100;
 
                 Debug.Log("Generator activo");
             }
             else
             {
-                PowerManager.Instance.hasPower = false;
+                PowerManager.Instance.totalPower = 0;
 
                 Debug.Log("Sin carbón");
             }

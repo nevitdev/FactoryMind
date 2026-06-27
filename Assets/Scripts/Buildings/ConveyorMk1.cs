@@ -10,6 +10,8 @@ public class ConveyorMk1 : MonoBehaviour
 
     private float timer;
 
+    public int powerUsage = 5;
+
     private void Start()
     {
         if (storage == null)
@@ -22,6 +24,13 @@ public class ConveyorMk1 : MonoBehaviour
     {
         if (!PowerManager.Instance.hasPower)
             return;
+
+        if (PowerManager.Instance.AvailablePower() < powerUsage)
+        {
+            return;
+        }
+
+        PowerManager.Instance.ConsumePower(powerUsage);
 
         if (storage == null)
             return;
