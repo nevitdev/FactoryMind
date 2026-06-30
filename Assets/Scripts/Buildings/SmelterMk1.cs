@@ -67,4 +67,15 @@ public class SmelterMk1 : MonoBehaviour
             }
         }
     }
+    private void OnEnable()
+    {
+        if (BuildingManager.Instance != null)
+            BuildingManager.Instance.smelters.Add(this);
+    }
+
+    private void OnDisable()
+    {
+        if (BuildingManager.Instance != null)
+            BuildingManager.Instance.smelters.Remove(this);
+    }
 }

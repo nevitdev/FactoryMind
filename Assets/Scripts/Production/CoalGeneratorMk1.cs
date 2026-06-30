@@ -35,4 +35,15 @@ public class CoalGeneratorMk1 : MonoBehaviour
             }
         }
     }
+    private void OnEnable()
+    {
+        if (BuildingManager.Instance != null)
+            BuildingManager.Instance.generators.Add(this);
+    }
+
+    private void OnDisable()
+    {
+        if (BuildingManager.Instance != null)
+            BuildingManager.Instance.generators.Remove(this);
+    }
 }

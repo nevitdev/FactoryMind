@@ -110,4 +110,15 @@ public class MinerMk1 : MonoBehaviour
             }
         }
     }
+    private void OnEnable()
+    {
+        if (BuildingManager.Instance != null)
+            BuildingManager.Instance.miners.Add(this);
+    }
+
+    private void OnDisable()
+    {
+        if (BuildingManager.Instance != null)
+            BuildingManager.Instance.miners.Remove(this);
+    }
 }

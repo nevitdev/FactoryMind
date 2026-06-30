@@ -48,4 +48,15 @@ public class ConveyorMk1 : MonoBehaviour
             );
         }
     }
+    private void OnEnable()
+    {
+        if (BuildingManager.Instance != null)
+            BuildingManager.Instance.conveyors.Add(this);
+    }
+
+    private void OnDisable()
+    {
+        if (BuildingManager.Instance != null)
+            BuildingManager.Instance.conveyors.Remove(this);
+    }
 }

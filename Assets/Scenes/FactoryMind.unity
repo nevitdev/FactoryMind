@@ -637,7 +637,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u26A1 POWER\r\n\r\nProducci\xF3n: 100 MW\r\n\r\nConsumo: 35 MW\r\n\r\nDisponible:
+  m_text: "POWER\r\n\r\nProducci\xF3n: 100 MW\r\n\r\nConsumo: 35 MW\r\n\r\nDisponible:
     65 MW"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
