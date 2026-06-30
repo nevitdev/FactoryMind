@@ -3,18 +3,26 @@ using UnityEngine;
 public class MinerMk1 : MonoBehaviour
 {
     public ResourceNode targetNode;
-    public StorageBox storage;
 
     public float productionInterval = 3f;
 
     private float timer;
 
-    public int powerUsage = 10;
+    public ConveyorMk1 outputConveyor;
+
+    public int powerConsumption = 2;
+
+    private StorageBox Storage
+    {
+        get
+        {
+            return GameStorage.Instance.Storage;
+        }
+    }
 
     private void Start()
     {
-        if (storage == null)
-            storage = GameStorage.Instance.storage;
+        
 
         if (targetNode == null)
             targetNode = FindClosestNode();
@@ -60,17 +68,22 @@ public class MinerMk1 : MonoBehaviour
 
     private void Update()
     {
+        if (!PowerManager.Instance.HasEnoughPower(powerConsumption))
+        {
+            Debug.Log("Sin energía");
+            return;
+        }
+
         if (!PowerManager.Instance.hasPower)
             return;
 
-        if (PowerManager.Instance.AvailablePower() < powerUsage)
+        if (PowerManager.Instance.AvailablePower < powerConsumption)
         {
             return;
         }
 
-        PowerManager.Instance.ConsumePower(powerUsage); 
 
-        if (storage == null)
+        if (Storage == null)
         {
             Debug.LogError("Storage no asignado");
             return;
@@ -83,7 +96,7 @@ public class MinerMk1 : MonoBehaviour
 
         timer += Time.deltaTime;
 
-        if (!storage.HasSpace(targetNode.resourceName))
+        if (!Storage.HasSpace(targetNode.resourceName))
         {
             return;
         }
@@ -92,11 +105,17 @@ public class MinerMk1 : MonoBehaviour
         {
             timer = 0f;
 
+            PowerManager.Instance.ConsumePower(powerConsumption);
+
+
             if (targetNode.Harvest())
             {
-                storage.AddResource(
-                    targetNode.resourceName
-                );
+                if (outputConveyor != null)
+                {
+                    outputConveyor.Receive(
+                        targetNode.resourceName
+                    );
+                }
 
                 Debug.Log(
                     "MinerMk1 produjo " +

@@ -10,7 +10,15 @@ public class ConveyorMk1 : MonoBehaviour
 
     private float timer;
 
-    public int powerUsage = 5;
+
+    public string carriedResource = "";
+
+    public int powerConsumption = 2;
+
+    public bool HasResource()
+    {
+        return carriedResource != "";
+    }
 
     private void Start()
     {
@@ -20,17 +28,42 @@ public class ConveyorMk1 : MonoBehaviour
         }
     }
 
+    public void Deliver(StorageBox storage)
+    {
+        if (!HasResource())
+            return;
+
+        storage.AddResource(carriedResource);
+
+        carriedResource = "";
+    }
+
+    public bool Receive(string resource)
+    {
+        if (HasResource())
+            return false;
+
+        carriedResource = resource;
+
+        return true;
+    }
+
+
     private void Update()
     {
+
+        if (!PowerManager.Instance.HasEnoughPower(powerConsumption))
+            return;
+
         if (!PowerManager.Instance.hasPower)
             return;
 
-        if (PowerManager.Instance.AvailablePower() < powerUsage)
+        if (PowerManager.Instance.AvailablePower() < powerConsumption)
         {
             return;
         }
 
-        PowerManager.Instance.ConsumePower(powerUsage);
+        PowerManager.Instance.ConsumePower(powerConsumption);
 
         if (storage == null)
             return;
@@ -47,6 +80,10 @@ public class ConveyorMk1 : MonoBehaviour
                 "Conveyor transfirió 1 Iron"
             );
         }
+        Debug.Log(
+    "Conveyor transportando: " +
+    carriedResource
+);
     }
     private void OnEnable()
     {

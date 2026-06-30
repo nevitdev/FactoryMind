@@ -22,11 +22,5 @@ public class BuildingManager : MonoBehaviour
                generators.Count +
                conveyors.Count;
     }
-    private void Update()
-    {
-        Debug.Log(
-            "Buildings: " +
-            GetTotalBuildings()
-        );
-    }
+    
 }

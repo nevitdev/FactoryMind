@@ -1,114 +1,76 @@
 using UnityEngine;
-// Gestiona la construcción de edificios
+
+// Gestiona el modo de construcción del jugador.
+// Responsabilidades:
+//  Seleccionar el edificio a construir.
+//  Mostrar la información en la Build UI.
+//  Verificar el costo de construcción.
+//  Instanciar edificios en el mundo.
 
 public class BuildManager : MonoBehaviour
 {
-
+    
     [Header("Prefabs")]
-    public GameObject storagePrefab;
-    public GameObject minerPrefab;
-    public GameObject smelterPrefab;
-    public GameObject conveyorPrefab;
-    public GameObject generatorPrefab;
+
+    [SerializeField] private GameObject storagePrefab;
+    [SerializeField] private GameObject minerPrefab;
+    [SerializeField] private GameObject smelterPrefab;
+    [SerializeField] private GameObject conveyorPrefab;
+    [SerializeField] private GameObject generatorPrefab;
 
     [Header("UI")]
-    public BuildUI buildUI;
+
+    [SerializeField] private BuildUI buildUI;
 
     [Header("Building Costs")]
-    public int storageCost = 3;
-    public int minerCost = 5;
-    public int smelterCost = 10;
-    public int conveyorCost = 2;
-    public int generatorCost = 15;
 
+    [SerializeField] private int storageCost = 3;
+    [SerializeField] private int minerCost = 5;
+    [SerializeField] private int smelterCost = 10;
+    [SerializeField] private int conveyorCost = 2;
+    [SerializeField] private int generatorCost = 15;
+
+    //Devuelve el Storage principal del juego.
+    private StorageBox Storage => GameStorage.Instance.Storage;
 
     private GameObject selectedBuilding;
+
     private bool buildMode;
-    public StorageBox storage;
-    private StorageBox Storage => GameStorage.Instance.storage;
-        
+    
     private void Start()
     {
-        selectedBuilding = minerPrefab;
+        if (GameStorage.Instance == null)
+        {
+            Debug.LogError("GameStorage no existe en la escena.");
+            enabled = false;
+            return;
+        }
 
-        buildUI.UpdateSelectedBuilding(
+        if (Storage == null)
+        {
+            Debug.LogError("No existe un Storage asignado.");
+            enabled = false;
+            return;
+        }
+
+        SelectBuilding(
+            minerPrefab,
             "Miner Mk1",
             minerCost
         );
 
-        if (storage == null)
-        {
-            storage =
-                GameStorage.Instance.storage;
-        }
         Debug.Log(
-    "Storage usado: " +
-    storage.name
-);
+            $"Storage utilizado: {Storage.name}"
+        );
     }
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Alpha1))
-        {
-            selectedBuilding = storagePrefab;
-
-            buildUI.UpdateSelectedBuilding(
-                "Storage",
-                storageCost
-            );
-        }
-
-        if (Input.GetKeyDown(KeyCode.Alpha2))
-        {
-            selectedBuilding = minerPrefab;
-
-            buildUI.UpdateSelectedBuilding(
-                "Miner Mk1",
-                minerCost
-            );
-        }
-
-        if (Input.GetKeyDown(KeyCode.Alpha3))
-        {
-            selectedBuilding = smelterPrefab;
-
-            buildUI.UpdateSelectedBuilding(
-                "Smelter Mk1",
-                smelterCost
-            );
-        }
-
-        if (Input.GetKeyDown(KeyCode.Alpha4))
-        {
-            selectedBuilding = conveyorPrefab;
-
-            buildUI.UpdateSelectedBuilding(
-                "Conveyor Mk1",
-                conveyorCost
-
-            );
-        }
-
-        if (Input.GetKeyDown(KeyCode.Alpha5))
-        {
-            selectedBuilding = generatorPrefab;
-
-            buildUI.UpdateSelectedBuilding(
-                "Coal Generator",
-                generatorCost
-
-            );
-        }
+        HandleBuildingSelection();
 
         if (Input.GetKeyDown(KeyCode.B))
         {
-            buildMode = !buildMode;
-
-            Debug.Log(
-                "Build Mode: " +
-                buildMode
-            );
+            ToggleBuildMode();
         }
 
         if (buildMode &&
@@ -117,7 +79,51 @@ public class BuildManager : MonoBehaviour
             PlaceBuilding();
         }
     }
+    
+    //Gestiona las teclas de selección de edificios.
+    private void HandleBuildingSelection()
+    {
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+            SelectBuilding(storagePrefab, "Storage", storageCost);
 
+        if (Input.GetKeyDown(KeyCode.Alpha2))
+            SelectBuilding(minerPrefab, "Miner Mk1", minerCost);
+
+        if (Input.GetKeyDown(KeyCode.Alpha3))
+            SelectBuilding(smelterPrefab, "Smelter Mk1", smelterCost);
+
+        if (Input.GetKeyDown(KeyCode.Alpha4))
+            SelectBuilding(conveyorPrefab, "Conveyor Mk1", conveyorCost);
+
+        if (Input.GetKeyDown(KeyCode.Alpha5))
+            SelectBuilding(generatorPrefab, "Coal Generator", generatorCost);
+    }
+
+    //Selecciona un edificio para construir.
+    private void SelectBuilding(
+        GameObject prefab,
+        string buildingName,
+        int cost)
+    {
+        selectedBuilding = prefab;
+
+        buildUI.UpdateSelectedBuilding(
+            buildingName,
+            cost
+        );
+    }
+
+    //Activa o desactiva el modo construcción.
+    private void ToggleBuildMode()
+    {
+        buildMode = !buildMode;
+
+        Debug.Log(
+            $"Build Mode: {buildMode}"
+        );
+    }
+
+    //Intenta colocar el edificio seleccionado.
     private void PlaceBuilding()
     {
         Ray ray =
@@ -125,42 +131,33 @@ public class BuildManager : MonoBehaviour
                 Input.mousePosition
             );
 
-        if (Physics.Raycast(
+        if (!Physics.Raycast(
             ray,
             out RaycastHit hit))
         {
-            int cost = GetBuildCost();
-            Debug.Log(
-                "Iron actual: " +
-                 storage.iron
-                );
-
-            Debug.Log(
-                "Costo edificio: " +
-                cost
-            );
-
-            Debug.Log(
-                "Edificio seleccionado: " +
-                selectedBuilding.name
-            );
-
-            if (!storage.RemoveIron(cost))
-            {
-                Debug.Log(
-                    "No hay suficiente Iron"
-                );
-
-                return;
-            }
-
-            Instantiate(
-                selectedBuilding,
-                hit.point,
-                Quaternion.identity
-            );
+            return;
         }
+
+        int cost = GetBuildCost();
+
+        Debug.Log($"Iron: {Storage.iron}");
+        Debug.Log($"Costo: {cost}");
+        Debug.Log($"Edificio: {selectedBuilding.name}");
+
+        if (!Storage.RemoveIron(cost))
+        {
+            Debug.Log("No hay suficiente Iron.");
+            return;
+        }
+
+        Instantiate(
+            selectedBuilding,
+            hit.point,
+            Quaternion.identity
+        );
     }
+
+    // Devuelve el costo del edificio seleccionado.
     private int GetBuildCost()
     {
         if (selectedBuilding == storagePrefab)
@@ -180,4 +177,5 @@ public class BuildManager : MonoBehaviour
 
         return 0;
     }
+    
 }
