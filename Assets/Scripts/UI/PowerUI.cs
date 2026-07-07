@@ -9,8 +9,8 @@ public class PowerUI : MonoBehaviour
     {
         powerText.text =
             "POWER\n\n" +
-            "Production: " + PowerManager.Instance.totalPower + " MW\n" +
-            "Consumption: " + PowerManager.Instance.usedPower + " MW\n" +
-            "Available: " + PowerManager.Instance.AvailablePower() + " MW";
+            "Production: " + PowerManager.Instance.TotalPower + " MW\n" +
+            "Consumption: " + PowerManager.Instance.UsedPower + " MW\n" +
+            "Available: " + PowerManager.Instance.AvailablePower + " MW";
     }
 }

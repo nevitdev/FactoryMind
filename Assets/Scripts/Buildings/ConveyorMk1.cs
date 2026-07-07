@@ -24,7 +24,7 @@ public class ConveyorMk1 : MonoBehaviour
     {
         if (storage == null)
         {
-            storage = FindFirstObjectByType<StorageBox>();
+            storage = FindAnyObjectByType<StorageBox>();
         }
     }
 
@@ -55,10 +55,10 @@ public class ConveyorMk1 : MonoBehaviour
         if (!PowerManager.Instance.HasEnoughPower(powerConsumption))
             return;
 
-        if (!PowerManager.Instance.hasPower)
+        if (!PowerManager.Instance.HasPower)
             return;
 
-        if (PowerManager.Instance.AvailablePower() < powerConsumption)
+        if (PowerManager.Instance.AvailablePower < powerConsumption)
         {
             return;
         }

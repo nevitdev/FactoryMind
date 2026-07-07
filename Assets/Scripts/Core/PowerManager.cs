@@ -2,11 +2,6 @@ using UnityEngine;
 
 // Gestiona toda la energía del juego.
 
-// Responsabilidades:
-// Registrar la energía generada.
-// Registrar el consumo de energía.
-// Informar cuánta energía queda disponible.
-
 public class PowerManager : MonoBehaviour
 {
     // Instancia global del PowerManager.
@@ -83,6 +78,11 @@ public class PowerManager : MonoBehaviour
     public bool HasEnoughPower(int amount)
     {
         return AvailablePower >= amount;
+    }
+    // Establece la energía producida por el sistema.
+    public void SetTotalPower(int amount)
+    {
+        totalPower = Mathf.Max(0, amount);
     }
 
 }

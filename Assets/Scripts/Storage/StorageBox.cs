@@ -1,15 +1,39 @@
 using UnityEngine;
 
+// Almacena todos los recursos del juego.
+
 public class StorageBox : MonoBehaviour
 {
-    public int iron;
-    public int copper;
-    public int coal;
 
-    public int ironIngot;
-    public int copperIngot;
+    [Header("Raw Resources")]
 
-    public int maxCapacity = 10;
+    [SerializeField] private int iron;
+    [SerializeField] private int copper;
+    [SerializeField] private int coal;
+
+    [Header("Processed Resources")]
+
+    [SerializeField] private int ironIngot;
+    [SerializeField] private int copperIngot;
+
+    [Header("Storage")]
+
+    [SerializeField] private int maxCapacity = 10;
+
+
+    public int Iron => iron;
+
+    public int Copper => copper;
+
+    public int Coal => coal;
+
+    public int IronIngot => ironIngot;
+
+    public int CopperIngot => copperIngot;
+
+    public int MaxCapacity => maxCapacity;
+
+    //Comprueba si existe espacio para un recurso.
 
     public bool HasSpace(string resourceName)
     {
@@ -29,11 +53,13 @@ public class StorageBox : MonoBehaviour
         }
     }
 
+    //Agrega un recurso al Storage.
+ 
     public void AddResource(string resourceName)
     {
         if (!HasSpace(resourceName))
         {
-            Debug.Log(resourceName + " lleno");
+            Debug.Log($"{resourceName} Storage lleno.");
             return;
         }
 
@@ -52,54 +78,127 @@ public class StorageBox : MonoBehaviour
                 break;
 
             case "Copper Ingot":
-                copperIngot++;
+                AddCopperIngot();
                 break;
         }
 
-        Debug.Log(
-            $"Storage -> Iron:{iron} Copper:{copper} Coal:{coal}"
-        );
+        PrintInventory();
     }
 
-
+    //Agrega un Iron Ingot.
 
     public void AddIronIngot()
     {
         ironIngot++;
 
         Debug.Log(
-            "Iron Ingots: " +
-            ironIngot
+            $"Iron Ingots: {ironIngot}"
         );
     }
+
+    //Comprueba si existe suficiente Iron.
+  
     public bool HasIron(int amount)
     {
         return iron >= amount;
     }
 
+    //Consume Iron del Storage.
 
     public bool RemoveIron(int amount)
     {
-        Debug.Log(
-            "Iron disponible: " +
-            iron
-        );
+        if (amount <= 0)
+            return false;
 
-        Debug.Log(
-            "Costo: " +
-            amount
-        );
+        Debug.Log($"Iron disponible: {iron}");
+        Debug.Log($"Costo: {amount}");
 
         if (iron < amount)
             return false;
 
         iron -= amount;
 
-        Debug.Log(
-            "Iron restante: " +
-            iron
-        );
+        Debug.Log($"Iron restante: {iron}");
 
         return true;
     }
+
+    //Consume Copper del Storage.
+
+    public bool RemoveCopper(int amount)
+    {
+        if (amount <= 0)
+            return false;
+
+        if (copper < amount)
+            return false;
+
+        copper -= amount;
+
+        Debug.Log($"Copper restante: {copper}");
+
+        return true;
+    }
+
+    //Agrega un Copper Ingot al Storage.
+
+    public void AddCopperIngot()
+    {
+        copperIngot++;
+
+        Debug.Log(
+            $"Copper Ingots: {copperIngot}"
+        );
+    }
+
+    //Imprime el contenido actual del Storage.
+
+    private void PrintInventory()
+    {
+        Debug.Log(
+            $"Storage | " +
+            $"Iron:{iron} " +
+            $"Copper:{copper} " +
+            $"Coal:{coal} " +
+            $"Iron Ingot:{ironIngot} " +
+            $"Copper Ingot:{copperIngot}"
+        );
+    }
+    //Consume el carbon
+    public bool RemoveCoal(int amount)
+    {
+        if (amount <= 0)
+            return false;
+
+        if (coal < amount)
+            return false;
+
+        coal -= amount;
+
+        Debug.Log($"Coal restante: {coal}");
+
+        return true;
+    }
+
+
+
+    //Restaura el contenido del Storage desde una partida guardada.
+
+    public void LoadData(
+        int iron,
+        int copper,
+        int coal,
+        int ironIngot,
+        int copperIngot)
+    {
+        this.iron = iron;
+        this.copper = copper;
+        this.coal = coal;
+
+        this.ironIngot = ironIngot;
+        this.copperIngot = copperIngot;
+
+        PrintInventory();
+    }
+
 }

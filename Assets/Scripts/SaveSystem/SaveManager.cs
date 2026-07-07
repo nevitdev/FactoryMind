@@ -1,45 +1,60 @@
 using UnityEngine;
 using System.IO;
 
+//Guarda y carga el progreso del jugador.
+
 public class SaveManager : MonoBehaviour
 {
-    public StorageBox storage;
+    [Header("References")]
+
+    [SerializeField]
+    private StorageBox storage;
 
     private string savePath;
 
     private void Start()
     {
-        savePath =
-            Application.persistentDataPath +
-            "/save.json";
+        savePath = Path.Combine(
+            Application.persistentDataPath,
+            "save.json"
+        );
 
         if (storage == null)
-            storage = GameStorage.Instance.storage;
+        {
+            storage = GameStorage.Instance.Storage;
+        }
     }
+
+    //Guarda el inventario actual.
 
     public void SaveGame()
     {
         GameData data = new GameData();
 
-        data.iron = storage.iron;
-        data.copper = storage.copper;
-        data.coal = storage.coal;
+        data.iron = storage.Iron;
+        data.copper = storage.Copper;
+        data.coal = storage.Coal;
 
-        data.ironIngot = storage.ironIngot;
-        data.copperIngot = storage.copperIngot;
+        data.ironIngot = storage.IronIngot;
+        data.copperIngot = storage.CopperIngot;
 
         string json =
             JsonUtility.ToJson(data, true);
 
         File.WriteAllText(savePath, json);
 
-        Debug.Log("Partida guardada");
+        Debug.Log("Partida guardada correctamente.");
     }
+
+    //Carga una partida guardada.
 
     public void LoadGame()
     {
         if (!File.Exists(savePath))
+        {
+            Debug.Log("No existe ninguna partida guardada.");
             return;
+        }
 
         string json =
             File.ReadAllText(savePath);
@@ -47,22 +62,27 @@ public class SaveManager : MonoBehaviour
         GameData data =
             JsonUtility.FromJson<GameData>(json);
 
-        storage.iron = data.iron;
-        storage.copper = data.copper;
-        storage.coal = data.coal;
+        storage.LoadData(
+            data.iron,
+            data.copper,
+            data.coal,
+            data.ironIngot,
+            data.copperIngot
+        );
 
-        storage.ironIngot = data.ironIngot;
-        storage.copperIngot = data.copperIngot;
-
-        Debug.Log("Partida cargada");
+        Debug.Log("Partida cargada correctamente.");
     }
 
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.F5))
+        {
             SaveGame();
+        }
 
         if (Input.GetKeyDown(KeyCode.F9))
+        {
             LoadGame();
+        }
     }
 }

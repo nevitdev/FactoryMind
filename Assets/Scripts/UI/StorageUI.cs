@@ -10,10 +10,10 @@ public class StorageUI : MonoBehaviour
     {
         storageText.text =
             "STORAGE\n\n" +
-            "Iron: " + storage.iron + "\n" +
-            "Copper: " + storage.copper + "\n" +
-            "Coal: " + storage.coal + "\n"  +
-            "Iron Ingot: " + storage.ironIngot + "\n" +
-            "Copper Ingot: " + storage.copperIngot + "\n";
+            "Iron: " + storage.Iron + "\n" +
+            "Copper: " + storage.Copper + "\n" +
+            "Coal: " + storage.Coal + "\n" +
+            "Iron Ingot: " + storage.IronIngot + "\n" +
+            "Copper Ingot: " + storage.CopperIngot;
     }
 }

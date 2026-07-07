@@ -37,13 +37,10 @@ public class MinerMk1 : MonoBehaviour
         }
     }
 
-
     private ResourceNode FindClosestNode()
     {
         ResourceNode[] nodes =
-            FindObjectsByType<ResourceNode>(
-                FindObjectsSortMode.None
-            );
+        FindObjectsByType<ResourceNode>();
 
         ResourceNode closestNode = null;
         float closestDistance = Mathf.Infinity;
@@ -68,20 +65,17 @@ public class MinerMk1 : MonoBehaviour
 
     private void Update()
     {
+        if (!PowerManager.Instance.HasPower)
+        {
+            Debug.Log("No hay generadores activos.");
+            return;
+        }
+
         if (!PowerManager.Instance.HasEnoughPower(powerConsumption))
         {
-            Debug.Log("Sin energía");
+            Debug.Log("Sin energía suficiente.");
             return;
         }
-
-        if (!PowerManager.Instance.hasPower)
-            return;
-
-        if (PowerManager.Instance.AvailablePower < powerConsumption)
-        {
-            return;
-        }
-
 
         if (Storage == null)
         {
@@ -93,6 +87,7 @@ public class MinerMk1 : MonoBehaviour
         {
             return;
         }
+
 
         timer += Time.deltaTime;
 
@@ -107,20 +102,14 @@ public class MinerMk1 : MonoBehaviour
 
             PowerManager.Instance.ConsumePower(powerConsumption);
 
-
             if (targetNode.Harvest())
             {
                 if (outputConveyor != null)
                 {
-                    outputConveyor.Receive(
-                        targetNode.resourceName
-                    );
+                    outputConveyor.Receive(targetNode.resourceName);
                 }
 
-                Debug.Log(
-                    "MinerMk1 produjo " +
-                    targetNode.resourceName
-                );
+                Debug.Log("MinerMk1 produjo " + targetNode.resourceName);
             }
             else
             {
@@ -129,6 +118,7 @@ public class MinerMk1 : MonoBehaviour
             }
         }
     }
+
     private void OnEnable()
     {
         if (BuildingManager.Instance != null)

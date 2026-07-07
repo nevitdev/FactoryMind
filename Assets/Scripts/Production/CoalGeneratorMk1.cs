@@ -1,40 +1,45 @@
 using UnityEngine;
 
+//Genera energía consumiendo carbón.
+
 public class CoalGeneratorMk1 : MonoBehaviour
 {
-    public float fuelInterval = 5f;
+    [SerializeField]
+    private float fuelInterval = 5f;
+
+    [SerializeField]
+    private int generatedPower = 10;
 
     private float timer;
 
+    private StorageBox Storage => GameStorage.Instance.Storage;
+
     private void Update()
     {
-        StorageBox storage = GameStorage.Instance.storage;
-
-        if (storage == null)
+        if (Storage == null)
             return;
 
         timer += Time.deltaTime;
 
-        if (timer >= fuelInterval)
+        if (timer < fuelInterval)
+            return;
+
+        timer = 0f;
+
+        if (Storage.RemoveCoal(1))
         {
-            timer = 0f;
+            PowerManager.Instance.SetTotalPower(generatedPower);
 
-            if (storage.coal > 0)
-            {
-                storage.coal--;
+            Debug.Log("Generator activo");
+        }
+        else
+        {
+            PowerManager.Instance.SetTotalPower(0);
 
-                PowerManager.Instance.totalPower = 100;
-
-                Debug.Log("Generator activo");
-            }
-            else
-            {
-                PowerManager.Instance.totalPower = 0;
-
-                Debug.Log("Sin carbón");
-            }
+            Debug.Log("Sin carbón");
         }
     }
+
     private void OnEnable()
     {
         if (BuildingManager.Instance != null)
@@ -46,4 +51,5 @@ public class CoalGeneratorMk1 : MonoBehaviour
         if (BuildingManager.Instance != null)
             BuildingManager.Instance.generators.Remove(this);
     }
+
 }

@@ -140,7 +140,7 @@ public class BuildManager : MonoBehaviour
 
         int cost = GetBuildCost();
 
-        Debug.Log($"Iron: {Storage.iron}");
+        Debug.Log($"Iron: {Storage.Iron}");
         Debug.Log($"Costo: {cost}");
         Debug.Log($"Edificio: {selectedBuilding.name}");
 
