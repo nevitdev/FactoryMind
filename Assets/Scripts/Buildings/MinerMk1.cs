@@ -106,7 +106,38 @@ public class MinerMk1 : MonoBehaviour
             {
                 if (outputConveyor != null)
                 {
-                    outputConveyor.Receive(targetNode.resourceName);
+                    ResourceType type = ResourceType.IronOre;
+
+                    switch (targetNode.resourceName)
+                    {
+                        case "Iron":
+                            type = ResourceType.IronOre;
+                            break;
+
+                        case "Copper":
+                            type = ResourceType.CopperOre;
+                            break;
+
+                        case "Coal":
+                            type = ResourceType.Coal;
+                            break;
+                    }
+
+                    GameObject item =
+                        ItemFactory.Instance.Spawn(
+                            type,
+                            transform.position + Vector3.up
+                        );
+
+                    if (outputConveyor.Receive(item))
+                    {
+                        Debug.Log("Item enviado al conveyor");
+                    }
+                    else
+                    {
+                        Debug.Log("Conveyor ocupado");
+                        Destroy(item);
+                    }
                 }
 
                 Debug.Log("MinerMk1 produjo " + targetNode.resourceName);

@@ -9,23 +9,36 @@ public class ConveyorMk1 : MonoBehaviour
     public float transferInterval = 2f;
 
     private float timer;
+    [Header("Transport")]
 
+    [SerializeField]
+    private Transform startPoint;
 
-    public string carriedResource = "";
+    [SerializeField]
+    private Transform endPoint;
+
+    [SerializeField]
+    private float speed = 2f;
+
+    private GameObject carriedItem;
 
     public int powerConsumption = 2;
 
     public bool HasResource()
     {
-        return carriedResource != "";
+        return carriedItem != null;
     }
+
 
     private void Start()
     {
+        Debug.Log(name);
+
+        Debug.Log("Start = " + startPoint);
+        Debug.Log("End = " + endPoint);
+
         if (storage == null)
-        {
             storage = FindAnyObjectByType<StorageBox>();
-        }
     }
 
     public void Deliver(StorageBox storage)
@@ -33,17 +46,45 @@ public class ConveyorMk1 : MonoBehaviour
         if (!HasResource())
             return;
 
-        storage.AddResource(carriedResource);
+        Item item = carriedItem.GetComponent<Item>();
 
-        carriedResource = "";
+        switch (item.ResourceType)
+        {
+            case ResourceType.IronOre:
+                storage.AddResource(ResourceType.IronOre);
+                break;
+
+            case ResourceType.CopperOre:
+                storage.AddResource(ResourceType.CopperOre);
+                break;
+
+            case ResourceType.Coal:
+                storage.AddResource(ResourceType.Coal);
+                break;
+        }
+
+        Destroy(carriedItem);
+
+        carriedItem = null;
     }
 
-    public bool Receive(string resource)
+    public bool Receive(GameObject item)
     {
-        if (HasResource())
-            return false;
+        Debug.Log("Receive llamado");
 
-        carriedResource = resource;
+        if (carriedItem != null)
+        {
+            Debug.Log("Conveyor ocupado");
+            return false;
+        }
+
+        carriedItem = item;
+
+        Debug.Log("Item recibido");
+
+        carriedItem.transform.position = startPoint.position;
+
+        carriedItem.transform.SetParent(transform);
 
         return true;
     }
@@ -70,21 +111,49 @@ public class ConveyorMk1 : MonoBehaviour
 
         timer += Time.deltaTime;
 
-        if (timer >= transferInterval)
+
+        if (carriedItem != null)
         {
-            timer = 0f;
+            Debug.Log("Moviendo item");
 
-            storage.AddResource("Iron");
+            carriedItem.transform.position =
+                Vector3.MoveTowards(
+                    carriedItem.transform.position,
+                    endPoint.position,
+                    speed * Time.deltaTime
+                );
 
-            Debug.Log(
-                "Conveyor transfirió 1 Iron"
-            );
+            Debug.Log(carriedItem.transform.position);
+
+            if (Vector3.Distance(
+                carriedItem.transform.position,
+                endPoint.position) < 0.05f)
+            {
+                Debug.Log("Llegó al final");
+
+                DeliverItem();
+            }
         }
-        Debug.Log(
-    "Conveyor transportando: " +
-    carriedResource
-);
     }
+
+    private void DeliverItem()
+    {
+        StorageBox storage =
+            FindAnyObjectByType<StorageBox>();
+
+        if (storage == null)
+            return;
+
+        Item item =
+            carriedItem.GetComponent<Item>();
+
+        storage.AddResource(item.ResourceType);
+
+        Destroy(carriedItem);
+
+        carriedItem = null;
+    }
+
     private void OnEnable()
     {
         if (BuildingManager.Instance != null)

@@ -16,6 +16,7 @@ public class CoalGeneratorMk1 : MonoBehaviour
 
     private void Update()
     {
+        Debug.Log("Generator Update");
         if (Storage == null)
             return;
 
@@ -25,7 +26,7 @@ public class CoalGeneratorMk1 : MonoBehaviour
             return;
 
         timer = 0f;
-
+        Debug.Log("Coal disponible: " + Storage.Coal);
         if (Storage.RemoveCoal(1))
         {
             PowerManager.Instance.SetTotalPower(generatedPower);
@@ -35,7 +36,7 @@ public class CoalGeneratorMk1 : MonoBehaviour
         else
         {
             PowerManager.Instance.SetTotalPower(0);
-
+            Debug.Log("Power: " + PowerManager.Instance.TotalPower);
             Debug.Log("Sin carbón");
         }
     }

@@ -54,31 +54,29 @@ public class StorageBox : MonoBehaviour
     }
 
     //Agrega un recurso al Storage.
- 
-    public void AddResource(string resourceName)
-    {
-        if (!HasSpace(resourceName))
-        {
-            Debug.Log($"{resourceName} Storage lleno.");
-            return;
-        }
 
-        switch (resourceName)
+    public void AddResource(ResourceType type)
+    {
+        switch (type)
         {
-            case "Iron":
+            case ResourceType.IronOre:
                 iron++;
                 break;
 
-            case "Copper":
+            case ResourceType.CopperOre:
                 copper++;
                 break;
 
-            case "Coal":
+            case ResourceType.Coal:
                 coal++;
                 break;
 
-            case "Copper Ingot":
-                AddCopperIngot();
+            case ResourceType.IronIngot:
+                ironIngot++;
+                break;
+
+            case ResourceType.CopperIngot:
+                copperIngot++;
                 break;
         }
 
