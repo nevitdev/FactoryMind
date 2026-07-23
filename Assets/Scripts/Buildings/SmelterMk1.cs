@@ -19,24 +19,27 @@ public class SmelterMk1 : MonoBehaviour
     [SerializeField]
     private int powerConsumption = 2;
 
- 
+    [Header("Connections")]
+    [SerializeField] private ConveyorMk1 outputConveyor;
 
-    //Acceso al Storage principal.
+    private GameObject currentItem;
 
-    private StorageBox Storage => GameStorage.Instance.Storage;
-
-    
 
     private float timer;
 
-    
+
+    private void Start()
+    {
+        FindOutputConveyor();
+    }
 
     private void Update()
     {
-        if (Storage == null)
-            return;
 
         if (!PowerManager.Instance.HasPower)
+            return;
+
+        if (currentItem == null)
             return;
 
         timer += Time.deltaTime;
@@ -82,27 +85,69 @@ public class SmelterMk1 : MonoBehaviour
 
     private void ProduceIron()
     {
-        if (!Storage.RemoveIron(1))
-            return;
-
         PowerManager.Instance.ConsumePower(powerConsumption);
 
-        Storage.AddIronIngot();
+        Destroy(currentItem);
 
-        Debug.Log("Smelter produjo 1 Iron Ingot");
+        currentItem =
+            ItemFactory.Instance.Spawn(
+                ResourceType.IronIngot,
+                transform.position + Vector3.up
+            );
+
+        if (outputConveyor != null)
+        {
+            Debug.Log(outputConveyor);
+            outputConveyor.Receive(currentItem);
+            currentItem = null;
+        }
+
+        Debug.Log("Smelter produjo Iron Ingot");
     }
 
     private void ProduceCopper()
     {
-        if (Storage.Copper <= 0)
-            return;
+        Debug.Log("Copper aún no implementado.");
+    }
 
-        PowerManager.Instance.ConsumePower(powerConsumption);
+    public bool Receive(GameObject item)
+    {
+        if (currentItem != null)
+            return false;
 
-        Storage.RemoveCopper(1);
-        Storage.AddCopperIngot();
+        currentItem = item;
 
-        Debug.Log("Smelter produjo 1 Copper Ingot");
+        currentItem.transform.position = transform.position + Vector3.up * 0.5f;
+        currentItem.transform.SetParent(transform);
+
+        Debug.Log("Smelter recibió " + currentItem.name);
+
+        return true;
+    }
+
+    private void FindOutputConveyor()
+    {
+        Collider[] hits =
+            Physics.OverlapSphere(
+                transform.position,
+                2f);
+
+        foreach (Collider hit in hits)
+        {
+            ConveyorMk1 conveyor =
+                hit.GetComponent<ConveyorMk1>();
+
+            if (conveyor != null)
+            {
+                outputConveyor = conveyor;
+
+                Debug.Log(
+                    "Smelter conectado a " +
+                    conveyor.name);
+
+                return;
+            }
+        }
     }
 
 }
