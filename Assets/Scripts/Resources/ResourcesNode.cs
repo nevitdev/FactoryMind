@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class ResourceNode : MonoBehaviour
 {
-    public string resourceName = "Iron";
+    public ResourceType resourceType;
     public int amount = 10;
 
     public bool Harvest()
@@ -12,15 +12,11 @@ public class ResourceNode : MonoBehaviour
 
         amount--;
 
-        Debug.Log(
-            resourceName +
-            " restante: " +
-            amount
-        );
+        Debug.Log(resourceType + " restante: " + amount);
 
         if (amount <= 0)
         {
-            Debug.Log(resourceName + " destruido");
+            Debug.Log(resourceType + " destruido");
             Destroy(gameObject);
         }
 

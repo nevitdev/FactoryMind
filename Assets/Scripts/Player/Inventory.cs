@@ -6,19 +6,19 @@ public class Inventory : MonoBehaviour
     public int copper;
     public int coal;
 
-    public void AddResource(string resourceName)
+    public void AddResource(ResourceType type)
     {
-        switch (resourceName)
+        switch (type)
         {
-            case "Iron":
+            case ResourceType.IronOre:
                 iron++;
                 break;
 
-            case "Copper":
+            case ResourceType.CopperOre:
                 copper++;
                 break;
 
-            case "Coal":
+            case ResourceType.Coal:
                 coal++;
                 break;
         }

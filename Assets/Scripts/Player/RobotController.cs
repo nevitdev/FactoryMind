@@ -83,11 +83,11 @@ public class RobotController : MonoBehaviour
             {
                 if (resource.Harvest())
                 {
-                    inventory.AddResource(resource.resourceName);
+                    inventory.AddResource(resource.resourceType);
 
                     Debug.Log(
                         "Recolectaste " +
-                        resource.resourceName
+                        resource.resourceType
                     );
                 }
 

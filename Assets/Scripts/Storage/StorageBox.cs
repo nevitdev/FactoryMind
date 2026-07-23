@@ -35,18 +35,24 @@ public class StorageBox : MonoBehaviour
 
     //Comprueba si existe espacio para un recurso.
 
-    public bool HasSpace(string resourceName)
+    public bool HasSpace(ResourceType type)
     {
-        switch (resourceName)
+        switch (type)
         {
-            case "Iron":
+            case ResourceType.IronOre:
                 return iron < maxCapacity;
 
-            case "Copper":
+            case ResourceType.CopperOre:
                 return copper < maxCapacity;
 
-            case "Coal":
+            case ResourceType.Coal:
                 return coal < maxCapacity;
+
+            case ResourceType.IronIngot:
+                return ironIngot < maxCapacity;
+
+            case ResourceType.CopperIngot:
+                return copperIngot < maxCapacity;
 
             default:
                 return false;

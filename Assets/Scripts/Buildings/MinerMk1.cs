@@ -32,7 +32,7 @@ public class MinerMk1 : MonoBehaviour
             Debug.Log(
                 gameObject.name +
                 " encontró nodo: " +
-                targetNode.resourceName
+                targetNode.resourceType
             );
         }
     }
@@ -66,87 +66,59 @@ public class MinerMk1 : MonoBehaviour
     private void Update()
     {
         if (!PowerManager.Instance.HasPower)
-        {
-            Debug.Log("No hay generadores activos.");
             return;
-        }
 
         if (!PowerManager.Instance.HasEnoughPower(powerConsumption))
-        {
-            Debug.Log("Sin energía suficiente.");
             return;
-        }
 
         if (Storage == null)
-        {
-            Debug.LogError("Storage no asignado");
             return;
-        }
 
         if (targetNode == null)
-        {
             return;
-        }
-
 
         timer += Time.deltaTime;
 
-        if (!Storage.HasSpace(targetNode.resourceName))
+        if (timer < productionInterval)
+            return;
+
+        timer = 0f;
+
+        PowerManager.Instance.ConsumePower(powerConsumption);
+
+        if (!Storage.HasSpace(targetNode.resourceType))
         {
+            Debug.Log("Storage lleno");
             return;
         }
 
-        if (timer >= productionInterval)
+        if (targetNode.Harvest())
         {
-            timer = 0f;
+            GameObject item =
+                ItemFactory.Instance.Spawn(
+                    targetNode.resourceType,
+                    transform.position + Vector3.up
+                );
 
-            PowerManager.Instance.ConsumePower(powerConsumption);
-
-            if (targetNode.Harvest())
+            if (item == null)
             {
-                if (outputConveyor != null)
-                {
-                    ResourceType type = ResourceType.IronOre;
-
-                    switch (targetNode.resourceName)
-                    {
-                        case "Iron":
-                            type = ResourceType.IronOre;
-                            break;
-
-                        case "Copper":
-                            type = ResourceType.CopperOre;
-                            break;
-
-                        case "Coal":
-                            type = ResourceType.Coal;
-                            break;
-                    }
-
-                    GameObject item =
-                        ItemFactory.Instance.Spawn(
-                            type,
-                            transform.position + Vector3.up
-                        );
-
-                    if (outputConveyor.Receive(item))
-                    {
-                        Debug.Log("Item enviado al conveyor");
-                    }
-                    else
-                    {
-                        Debug.Log("Conveyor ocupado");
-                        Destroy(item);
-                    }
-                }
-
-                Debug.Log("MinerMk1 produjo " + targetNode.resourceName);
+                Debug.LogError("ItemFactory devolvió NULL");
+                return;
             }
-            else
+
+            Debug.Log("Item creado: " + item.name);
+
+            if (outputConveyor != null)
             {
-                Debug.Log("Nodo agotado");
-                targetNode = null;
+                outputConveyor.Receive(item);
             }
+
+            Debug.Log("Miner produjo " + targetNode.resourceType);
+        }
+        else
+        {
+            Debug.Log("Nodo agotado");
+            targetNode = null;
         }
     }
 

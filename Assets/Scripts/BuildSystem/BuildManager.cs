@@ -1,11 +1,6 @@
 using UnityEngine;
 
 // Gestiona el modo de construcción del jugador.
-// Responsabilidades:
-//  Seleccionar el edificio a construir.
-//  Mostrar la información en la Build UI.
-//  Verificar el costo de construcción.
-//  Instanciar edificios en el mundo.
 
 public class BuildManager : MonoBehaviour
 {
@@ -150,11 +145,20 @@ public class BuildManager : MonoBehaviour
             return;
         }
 
-        Instantiate(
-            selectedBuilding,
-            hit.point,
-            Quaternion.identity
-        );
+        GameObject building = Instantiate(
+    selectedBuilding,
+    hit.point,
+    Quaternion.identity
+);
+
+        // Actualizar conexiones de todos los conveyors
+        ConveyorMk1[] conveyors =
+            FindObjectsByType<ConveyorMk1>();
+
+        foreach (ConveyorMk1 conveyor in conveyors)
+        {
+            conveyor.RefreshConnections();
+        }
     }
 
     // Devuelve el costo del edificio seleccionado.

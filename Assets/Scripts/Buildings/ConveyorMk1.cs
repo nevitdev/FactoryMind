@@ -20,6 +20,11 @@ public class ConveyorMk1 : MonoBehaviour
     [SerializeField]
     private float speed = 2f;
 
+    [Header("Connections")]
+    [SerializeField] private ConveyorMk1 nextConveyor;
+
+    [SerializeField] private StorageBox targetStorage;
+
     private GameObject carriedItem;
 
     public int powerConsumption = 2;
@@ -29,16 +34,22 @@ public class ConveyorMk1 : MonoBehaviour
         return carriedItem != null;
     }
 
+    public void RefreshConnections()
+    {
+        nextConveyor = null;
+        targetStorage = null;
+
+        FindConnections();
+    }
 
     private void Start()
     {
-        Debug.Log(name);
-
-        Debug.Log("Start = " + startPoint);
-        Debug.Log("End = " + endPoint);
+        RefreshConnections();
 
         if (storage == null)
+        {
             storage = FindAnyObjectByType<StorageBox>();
+        }        
     }
 
     public void Deliver(StorageBox storage)
@@ -70,23 +81,20 @@ public class ConveyorMk1 : MonoBehaviour
 
     public bool Receive(GameObject item)
     {
-        Debug.Log("Receive llamado");
+        Debug.Log(name + " recibió un item");
 
         if (carriedItem != null)
-        {
-            Debug.Log("Conveyor ocupado");
             return false;
-        }
 
         carriedItem = item;
 
-        Debug.Log("Item recibido");
+        carriedItem.transform.SetParent(transform);
 
         carriedItem.transform.position = startPoint.position;
 
-        carriedItem.transform.SetParent(transform);
-
         return true;
+        Debug.Log(carriedItem.transform.position);
+        carriedItem.transform.position = startPoint.position;
     }
 
 
@@ -123,7 +131,7 @@ public class ConveyorMk1 : MonoBehaviour
                     speed * Time.deltaTime
                 );
 
-            Debug.Log(carriedItem.transform.position);
+            //Debug.Log(carriedItem.transform.position);
 
             if (Vector3.Distance(
                 carriedItem.transform.position,
@@ -138,20 +146,27 @@ public class ConveyorMk1 : MonoBehaviour
 
     private void DeliverItem()
     {
-        StorageBox storage =
-            FindAnyObjectByType<StorageBox>();
+        if (nextConveyor != null)
+        {
+            if (nextConveyor.Receive(carriedItem))
+            {
+                carriedItem = null;
+            }
 
-        if (storage == null)
             return;
+        }
 
-        Item item =
-            carriedItem.GetComponent<Item>();
+        if (targetStorage != null)
+        {
+            Item item = carriedItem.GetComponent<Item>();
 
-        storage.AddResource(item.ResourceType);
+            targetStorage.AddResource(item.ResourceType);
 
-        Destroy(carriedItem);
+            Destroy(carriedItem);
 
-        carriedItem = null;
+            carriedItem = null;
+        }
+        Debug.Log(nextConveyor);
     }
 
     private void OnEnable()
@@ -164,5 +179,48 @@ public class ConveyorMk1 : MonoBehaviour
     {
         if (BuildingManager.Instance != null)
             BuildingManager.Instance.conveyors.Remove(this);
+    }
+
+
+    private void FindConnections()
+    {
+        nextConveyor = null;
+        targetStorage = null;
+
+        Collider[] hits = Physics.OverlapSphere(endPoint.position, 1f);
+
+        foreach (Collider hit in hits)
+        {
+            ConveyorMk1 conveyor = hit.GetComponent<ConveyorMk1>();
+
+            if (conveyor != null && conveyor != this)
+            {
+                nextConveyor = conveyor;
+
+                Debug.Log(name + " conectado a " + conveyor.name);
+
+                return;
+            }
+
+            StorageBox storage = hit.GetComponent<StorageBox>();
+
+            if (storage != null)
+            {
+                targetStorage = storage;
+
+                Debug.Log(name + " conectado al Storage");
+
+                return;
+            }
+        }
+
+        Debug.Log(name + " no encontró conexiones.");
+
+        Debug.DrawLine(
+    endPoint.position,
+    endPoint.position + Vector3.up,
+    Color.green,
+    10f
+);
     }
 }
