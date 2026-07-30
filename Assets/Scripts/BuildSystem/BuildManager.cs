@@ -146,18 +146,26 @@ public class BuildManager : MonoBehaviour
         }
 
         GameObject building = Instantiate(
-    selectedBuilding,
-    hit.point,
-    Quaternion.identity
+            selectedBuilding,
+            hit.point,
+            Quaternion.identity
 );
 
         // Actualizar conexiones de todos los conveyors
         ConveyorMk1[] conveyors =
-            FindObjectsByType<ConveyorMk1>();
+            FindObjectsByType<ConveyorMk1>(FindObjectsSortMode.None);
 
         foreach (ConveyorMk1 conveyor in conveyors)
         {
             conveyor.RefreshConnections();
+        }
+
+        SmelterMk1[] smelters =
+            FindObjectsByType<SmelterMk1>(FindObjectsSortMode.None);
+
+        foreach (SmelterMk1 smelter in smelters)
+        {
+            smelter.RefreshConnections();
         }
     }
 

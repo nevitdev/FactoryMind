@@ -15,6 +15,7 @@ public class StorageBox : MonoBehaviour
 
     [SerializeField] private int ironIngot;
     [SerializeField] private int copperIngot;
+    [SerializeField] private int ironPlate;
 
     [Header("Storage")]
 
@@ -83,6 +84,10 @@ public class StorageBox : MonoBehaviour
 
             case ResourceType.CopperIngot:
                 copperIngot++;
+                break;
+
+            case ResourceType.IronPlate:
+                ironPlate++;
                 break;
         }
 
@@ -165,7 +170,8 @@ public class StorageBox : MonoBehaviour
             $"Copper:{copper} " +
             $"Coal:{coal} " +
             $"Iron Ingot:{ironIngot} " +
-            $"Copper Ingot:{copperIngot}"
+            $"Copper Ingot:{copperIngot} " +
+            $"Iron Plate:{ironPlate}"
         );
     }
     //Consume el carbon

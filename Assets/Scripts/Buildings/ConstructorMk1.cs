@@ -1,18 +1,18 @@
 using UnityEngine;
 
-//Convierte minerales almacenados en lingotes.
+//Construye nuevos elementos
 
 
-public class SmelterMk1 : MonoBehaviour
+public class ConstructorMk1 : MonoBehaviour
 {
 
     [Header("Production")]
 
     [SerializeField]
-    private float productionInterval = 5f;
+    private float productionInterval = 4f;
 
     [SerializeField]
-    private RecipeType recipe = RecipeType.Iron;
+    private ConstructorRecipe recipe;
 
     [Header("Power")]
 
@@ -58,13 +58,13 @@ public class SmelterMk1 : MonoBehaviour
     private void OnEnable()
     {
         if (BuildingManager.Instance != null)
-            BuildingManager.Instance.smelters.Add(this);
+            BuildingManager.Instance.constructors.Add(this);
     }
 
     private void OnDisable()
     {
         if (BuildingManager.Instance != null)
-            BuildingManager.Instance.smelters.Remove(this);
+            BuildingManager.Instance.constructors.Remove(this);
     }
 
     //Produce un lingote según la receta seleccionada.
@@ -76,17 +76,17 @@ public class SmelterMk1 : MonoBehaviour
 
         switch (recipe)
         {
-            case RecipeType.Iron:
-                ProduceIron();
+            case ConstructorRecipe.IronPlate:
+                ProduceIronPlate();
                 break;
 
-            case RecipeType.Copper:
-                ProduceCopper();
+            case ConstructorRecipe.IronRod:
+                ProduceIronRod();
                 break;
         }
     }
 
-    private void ProduceIron()
+    private void ProduceIronPlate()
     {
         PowerManager.Instance.ConsumePower(powerConsumption);
 
@@ -94,23 +94,22 @@ public class SmelterMk1 : MonoBehaviour
 
         currentItem =
             ItemFactory.Instance.Spawn(
-                ResourceType.IronIngot,
+                ResourceType.IronPlate,
                 transform.position + Vector3.up
             );
 
         if (outputConveyor != null)
         {
-            Debug.Log(outputConveyor);
             outputConveyor.Receive(currentItem);
             currentItem = null;
         }
 
-        Debug.Log("Smelter produjo Iron Ingot");
+        Debug.Log("Constructor produjo Iron Plate");
     }
 
-    private void ProduceCopper()
+    private void ProduceIronRod()
     {
-        Debug.Log("Copper aún no implementado.");
+        Debug.Log("IronRod aún no implementado.");
     }
 
     public bool Receive(GameObject item)
@@ -118,12 +117,19 @@ public class SmelterMk1 : MonoBehaviour
         if (currentItem != null)
             return false;
 
+        Item itemData = item.GetComponent<Item>();
+
+        if (itemData.ResourceType != ResourceType.IronIngot)
+            return false;
+
         currentItem = item;
 
-        currentItem.transform.position = transform.position + Vector3.up * 0.5f;
+        currentItem.transform.position =
+            transform.position + Vector3.up * 0.5f;
+
         currentItem.transform.SetParent(transform);
 
-        Debug.Log("Smelter recibió " + currentItem.name);
+        Debug.Log("Constructor recibió " + currentItem.name);
 
         return true;
     }

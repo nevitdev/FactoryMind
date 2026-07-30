@@ -5,5 +5,11 @@ public enum ResourceType
     Coal,
 
     IronIngot,
-    CopperIngot
+    CopperIngot,
+
+    IronPlate,
+    CopperPlate,
+
+    Screw,
+    Wire
 }

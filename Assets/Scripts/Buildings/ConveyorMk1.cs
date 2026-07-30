@@ -24,6 +24,7 @@ public class ConveyorMk1 : MonoBehaviour
     [SerializeField] private ConveyorMk1 nextConveyor;
     [SerializeField] private StorageBox targetStorage;
     [SerializeField] private SmelterMk1 targetSmelter;
+    [SerializeField] private ConstructorMk1 targetConstructor;
 
     private GameObject carriedItem;
 
@@ -168,6 +169,16 @@ public class ConveyorMk1 : MonoBehaviour
             return;
         }
 
+        if (targetConstructor != null)
+        {
+            if (targetConstructor.Receive(carriedItem))
+            {
+                carriedItem = null;
+            }
+
+            return;
+        }
+
         if (targetStorage != null)
         {
             Item item = carriedItem.GetComponent<Item>();
@@ -199,6 +210,7 @@ public class ConveyorMk1 : MonoBehaviour
         nextConveyor = null;
         targetStorage = null;
         targetSmelter = null;
+        targetConstructor = null;
 
         Collider[] hits = Physics.OverlapSphere(endPoint.position, 1f);
 
@@ -222,6 +234,18 @@ public class ConveyorMk1 : MonoBehaviour
                 targetSmelter = smelter;
 
                 Debug.Log(name + " conectado al Smelter");
+
+                return;
+            }
+
+            ConstructorMk1 constructor =
+            hit.GetComponent<ConstructorMk1>();
+
+            if (constructor != null)
+            {
+                targetConstructor = constructor;
+
+                Debug.Log(name + " conectado al Constructor");
 
                 return;
             }
