@@ -25,6 +25,8 @@ public class BuildManager : MonoBehaviour
     [SerializeField] private int conveyorCost = 2;
     [SerializeField] private int generatorCost = 15;
 
+    [SerializeField] private GhostBuilding ghost;
+
     //Devuelve el Storage principal del juego.
     private StorageBox Storage => GameStorage.Instance.Storage;
 
@@ -121,23 +123,12 @@ public class BuildManager : MonoBehaviour
     //Intenta colocar el edificio seleccionado.
     private void PlaceBuilding()
     {
-        Ray ray =
-            Camera.main.ScreenPointToRay(
-                Input.mousePosition
-            );
-
-        if (!Physics.Raycast(
-            ray,
-            out RaycastHit hit))
-        {
+        // Verificar si el Ghost está en una posición válida
+        if (!ghost.CanBuild())
             return;
-        }
 
+        //  Verificar recursos
         int cost = GetBuildCost();
-
-        Debug.Log($"Iron: {Storage.Iron}");
-        Debug.Log($"Costo: {cost}");
-        Debug.Log($"Edificio: {selectedBuilding.name}");
 
         if (!Storage.RemoveIron(cost))
         {
@@ -145,23 +136,22 @@ public class BuildManager : MonoBehaviour
             return;
         }
 
+        //  Construir el edificio
         GameObject building = Instantiate(
             selectedBuilding,
-            hit.point,
-            Quaternion.identity
-);
+            ghost.transform.position,
+            ghost.transform.rotation
+        );
 
-        // Actualizar conexiones de todos los conveyors
-        ConveyorMk1[] conveyors =
-            FindObjectsByType<ConveyorMk1>(FindObjectsSortMode.None);
+        //  Actualizar conexiones
+        ConveyorMk1[] conveyors = FindObjectsByType<ConveyorMk1>();
 
         foreach (ConveyorMk1 conveyor in conveyors)
         {
             conveyor.RefreshConnections();
         }
 
-        SmelterMk1[] smelters =
-            FindObjectsByType<SmelterMk1>(FindObjectsSortMode.None);
+        SmelterMk1[] smelters = FindObjectsByType<SmelterMk1>();
 
         foreach (SmelterMk1 smelter in smelters)
         {
