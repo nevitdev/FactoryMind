@@ -11,6 +11,7 @@ public class ItemFactory : MonoBehaviour
     [SerializeField] private GameObject ironIngotPrefab;
     [SerializeField] private GameObject copperIngotPrefab;
     [SerializeField] private GameObject ironPlatePrefab;
+    [SerializeField] private GameObject ironRodPrefab;
 
     private void Awake()
     {
@@ -58,6 +59,9 @@ public class ItemFactory : MonoBehaviour
 
             case ResourceType.IronPlate:
                 return ironPlatePrefab;
+
+            case ResourceType.IronRod:
+                return ironRodPrefab;
         }
 
         return null;

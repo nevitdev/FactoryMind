@@ -10,6 +10,8 @@ public enum ResourceType
     IronPlate,
     CopperPlate,
 
+    IronRod,
+
     Screw,
     Wire
 }

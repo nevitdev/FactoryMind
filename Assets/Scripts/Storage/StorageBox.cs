@@ -16,6 +16,7 @@ public class StorageBox : MonoBehaviour
     [SerializeField] private int ironIngot;
     [SerializeField] private int copperIngot;
     [SerializeField] private int ironPlate;
+    [SerializeField] private int ironRod;
 
     [Header("Storage")]
 
@@ -23,15 +24,11 @@ public class StorageBox : MonoBehaviour
 
 
     public int Iron => iron;
-
     public int Copper => copper;
-
     public int Coal => coal;
-
     public int IronIngot => ironIngot;
-
+    public int IronRod => ironRod;
     public int CopperIngot => copperIngot;
-
     public int MaxCapacity => maxCapacity;
 
     //Comprueba si existe espacio para un recurso.
@@ -88,6 +85,9 @@ public class StorageBox : MonoBehaviour
 
             case ResourceType.IronPlate:
                 ironPlate++;
+                break;
+            case ResourceType.IronRod:
+                ironRod++;
                 break;
         }
 
@@ -171,7 +171,8 @@ public class StorageBox : MonoBehaviour
             $"Coal:{coal} " +
             $"Iron Ingot:{ironIngot} " +
             $"Copper Ingot:{copperIngot} " +
-            $"Iron Plate:{ironPlate}"
+            $"Iron Plate:{ironPlate}" +
+            $"Iron Rod: { ironRod}"
         );
     }
     //Consume el carbon

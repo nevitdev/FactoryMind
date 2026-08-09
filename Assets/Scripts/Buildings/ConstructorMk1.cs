@@ -109,7 +109,23 @@ public class ConstructorMk1 : MonoBehaviour
 
     private void ProduceIronRod()
     {
-        Debug.Log("IronRod aún no implementado.");
+        PowerManager.Instance.ConsumePower(powerConsumption);
+
+        Destroy(currentItem);
+
+        currentItem =
+            ItemFactory.Instance.Spawn(
+                ResourceType.IronRod,
+                transform.position + Vector3.up
+            );
+
+        if (outputConveyor != null)
+        {
+            outputConveyor.Receive(currentItem);
+            currentItem = null;
+        }
+
+        Debug.Log("Constructor produjo Iron Rod");
     }
 
     public bool Receive(GameObject item)

@@ -745,6 +745,7 @@ MonoBehaviour:
   ironIngotPrefab: {fileID: 4617356082100931835, guid: f6333de3aa58a0547b53cbbafaf11425, type: 3}
   copperIngotPrefab: {fileID: 59171901213628182, guid: 7f21a8ece06494d4f900f0b0a9ead75b, type: 3}
   ironPlatePrefab: {fileID: 7375801615737597518, guid: 0bfe65e85e021ff4cbce035c9ff7bcc9, type: 3}
+  ironRodPrefab: {fileID: 7041955009260335737, guid: 1134f179a61fdb8468b6794f52003890, type: 3}
 --- !u!4 &607059121
 Transform:
   m_ObjectHideFlags: 0
