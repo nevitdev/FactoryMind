@@ -2438,12 +2438,14 @@ MonoBehaviour:
   smelterPrefab: {fileID: 34206998}
   conveyorPrefab: {fileID: 2158790560707502228, guid: 2d14375c70f10bc4ca2c3f8ddea38f0c, type: 3}
   generatorPrefab: {fileID: 3426395151446489441, guid: 6fff8b49e81347c499c2b9a51d9dee62, type: 3}
+  constructorPrefab: {fileID: 6861898023018864486, guid: aa8ab6be7cb2ac044bb50e25d3d905be, type: 3}
   buildUI: {fileID: 1064912953}
   storageCost: 3
   minerCost: 5
   smelterCost: 10
   conveyorCost: 2
   generatorCost: 15
+  constructorCost: 12
   ghost: {fileID: 1870615402}
 --- !u!4 &1846803505
 Transform:

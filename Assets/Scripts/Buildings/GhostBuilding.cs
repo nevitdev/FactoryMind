@@ -4,11 +4,19 @@ public class GhostBuilding : MonoBehaviour
 {
     private Camera cam;
 
+    [Header("Ground")]
     [SerializeField]
     private LayerMask groundMask;
-    [SerializeField] private Renderer ghostRenderer;
-    [SerializeField] private Color validColor = Color.green;
-    [SerializeField] private Color invalidColor = Color.red;
+
+    [Header("Ghost")]
+    [SerializeField]
+    private Renderer ghostRenderer;
+
+    [SerializeField]
+    private Color validColor = Color.green;
+
+    [SerializeField]
+    private Color invalidColor = Color.red;
 
     private void Start()
     {
@@ -18,6 +26,11 @@ public class GhostBuilding : MonoBehaviour
     private void Update()
     {
         FollowMouse();
+
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            Rotate();
+        }
 
         if (CanBuild())
         {
@@ -29,11 +42,20 @@ public class GhostBuilding : MonoBehaviour
         }
     }
 
+    private void Rotate()
+    {
+        transform.Rotate(0f, 90f, 0f);
+    }
+
     private void FollowMouse()
     {
         Ray ray = cam.ScreenPointToRay(Input.mousePosition);
 
-        if (Physics.Raycast(ray, out RaycastHit hit, 500f, groundMask))
+        if (Physics.Raycast(
+            ray,
+            out RaycastHit hit,
+            500f,
+            groundMask))
         {
             Vector3 position = hit.point;
 
@@ -46,16 +68,63 @@ public class GhostBuilding : MonoBehaviour
 
     public bool CanBuild()
     {
-        Collider[] hits = Physics.OverlapBox(
-            transform.position,
-            Vector3.one * 0.45f);
+        Collider[] colliders =
+            GetComponentsInChildren<Collider>();
 
-        foreach (Collider hit in hits)
+        foreach (Collider collider in colliders)
         {
-            if (hit.CompareTag("Building"))
-                return false;
+            Collider[] hits = Physics.OverlapBox(
+                collider.bounds.center,
+                collider.bounds.extents,
+                transform.rotation
+            );
+
+            foreach (Collider hit in hits)
+            {
+                if (hit.transform.IsChildOf(transform))
+                    continue;
+
+                if (hit.CompareTag("Building"))
+                    return false;
+            }
         }
 
         return true;
+    }
+    public void SetBuilding(GameObject prefab)
+    {
+        // Eliminar la apariencia anterior
+        foreach (Transform child in transform)
+        {
+            Destroy(child.gameObject);
+        }
+
+        // Crear la apariencia del nuevo edificio
+        GameObject visual = Instantiate(
+            prefab,
+            transform.position,
+            transform.rotation,
+            transform
+        );
+
+        // Desactivar scripts del edificio real
+        MonoBehaviour[] scripts =
+            visual.GetComponentsInChildren<MonoBehaviour>();
+
+        foreach (MonoBehaviour script in scripts)
+        {
+            script.enabled = false;
+        }
+
+        // Buscar Renderer
+        ghostRenderer =
+            visual.GetComponentInChildren<Renderer>();
+
+        if (ghostRenderer == null)
+        {
+            Debug.LogWarning(
+                "El prefab no tiene Renderer: " +
+                prefab.name);
+        }
     }
 }

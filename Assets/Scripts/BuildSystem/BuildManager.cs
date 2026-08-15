@@ -12,6 +12,7 @@ public class BuildManager : MonoBehaviour
     [SerializeField] private GameObject smelterPrefab;
     [SerializeField] private GameObject conveyorPrefab;
     [SerializeField] private GameObject generatorPrefab;
+    [SerializeField] private GameObject constructorPrefab;
 
     [Header("UI")]
 
@@ -24,6 +25,7 @@ public class BuildManager : MonoBehaviour
     [SerializeField] private int smelterCost = 10;
     [SerializeField] private int conveyorCost = 2;
     [SerializeField] private int generatorCost = 15;
+    [SerializeField] private int constructorCost = 12;
 
     [SerializeField] private GhostBuilding ghost;
 
@@ -56,6 +58,8 @@ public class BuildManager : MonoBehaviour
             minerCost
         );
 
+        ghost.gameObject.SetActive(false);
+
         Debug.Log(
             $"Storage utilizado: {Storage.name}"
         );
@@ -70,13 +74,19 @@ public class BuildManager : MonoBehaviour
             ToggleBuildMode();
         }
 
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            buildMode = false;
+            ghost.gameObject.SetActive(false);
+        }
+
         if (buildMode &&
             Input.GetMouseButtonDown(0))
         {
             PlaceBuilding();
         }
     }
-    
+
     //Gestiona las teclas de selección de edificios.
     private void HandleBuildingSelection()
     {
@@ -94,6 +104,9 @@ public class BuildManager : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Alpha5))
             SelectBuilding(generatorPrefab, "Coal Generator", generatorCost);
+
+        if (Input.GetKeyDown(KeyCode.Alpha6))
+            SelectBuilding(constructorPrefab,"Constructor Mk1",constructorCost);
     }
 
     //Selecciona un edificio para construir.
@@ -103,6 +116,8 @@ public class BuildManager : MonoBehaviour
         int cost)
     {
         selectedBuilding = prefab;
+
+        ghost.SetBuilding(prefab);
 
         buildUI.UpdateSelectedBuilding(
             buildingName,
@@ -115,43 +130,58 @@ public class BuildManager : MonoBehaviour
     {
         buildMode = !buildMode;
 
-        Debug.Log(
-            $"Build Mode: {buildMode}"
-        );
+        ghost.gameObject.SetActive(buildMode);
+
+        Debug.Log($"Build Mode: {buildMode}");
     }
 
     //Intenta colocar el edificio seleccionado.
     private void PlaceBuilding()
     {
-        // Verificar si el Ghost está en una posición válida
+        Debug.Log(
+    $"Intentando construir {selectedBuilding.name} | " +
+    $"Posición: {ghost.transform.position} | " +
+    $"Puede construir: {ghost.CanBuild()}"
+);
+        // 1. Verificar posición
         if (!ghost.CanBuild())
+        {
+            Debug.Log("No se puede construir aquí.");
             return;
+        }
 
-        //  Verificar recursos
+        // 2. Obtener costo
         int cost = GetBuildCost();
 
+        // 3. Verificar recursos
         if (!Storage.RemoveIron(cost))
         {
             Debug.Log("No hay suficiente Iron.");
             return;
         }
 
-        //  Construir el edificio
+        // 4. Construir
         GameObject building = Instantiate(
             selectedBuilding,
             ghost.transform.position,
             ghost.transform.rotation
         );
 
-        //  Actualizar conexiones
-        ConveyorMk1[] conveyors = FindObjectsByType<ConveyorMk1>();
+        Debug.Log(
+            "Construido: " + building.name
+        );
+
+        // 5. Actualizar conexiones
+        ConveyorMk1[] conveyors =
+            FindObjectsByType<ConveyorMk1>();
 
         foreach (ConveyorMk1 conveyor in conveyors)
         {
             conveyor.RefreshConnections();
         }
 
-        SmelterMk1[] smelters = FindObjectsByType<SmelterMk1>();
+        SmelterMk1[] smelters =
+            FindObjectsByType<SmelterMk1>();
 
         foreach (SmelterMk1 smelter in smelters)
         {
@@ -176,6 +206,9 @@ public class BuildManager : MonoBehaviour
 
         if (selectedBuilding == generatorPrefab)
             return generatorCost;
+
+        if (selectedBuilding == constructorPrefab)
+            return constructorCost;
 
         return 0;
     }
