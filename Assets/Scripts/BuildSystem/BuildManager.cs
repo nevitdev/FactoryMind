@@ -28,14 +28,16 @@ public class BuildManager : MonoBehaviour
     [SerializeField] private int constructorCost = 12;
 
     [SerializeField] private GhostBuilding ghost;
+    
 
-    //Devuelve el Storage principal del juego.
+   //Devuelve el Storage principal del juego.
     private StorageBox Storage => GameStorage.Instance.Storage;
 
     private GameObject selectedBuilding;
 
     private bool buildMode;
-    
+    private bool demolishMode;
+
     private void Start()
     {
         if (GameStorage.Instance == null)
@@ -76,14 +78,24 @@ public class BuildManager : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            buildMode = false;
-            ghost.gameObject.SetActive(false);
+            CancelBuildMode();
         }
 
         if (buildMode &&
             Input.GetMouseButtonDown(0))
         {
             PlaceBuilding();
+        }
+
+        if (Input.GetKeyDown(KeyCode.X))
+        {
+            ToggleDemolishMode();
+        }
+
+        if (demolishMode &&
+            Input.GetMouseButtonDown(0))
+        {
+            DemolishBuilding();
         }
     }
 
@@ -130,37 +142,40 @@ public class BuildManager : MonoBehaviour
     {
         buildMode = !buildMode;
 
-        ghost.gameObject.SetActive(buildMode);
+        if (ghost != null)
+            ghost.gameObject.SetActive(buildMode);
 
-        Debug.Log($"Build Mode: {buildMode}");
+        Debug.Log(
+            $"Build Mode: {buildMode}"
+        );
     }
 
     //Intenta colocar el edificio seleccionado.
     private void PlaceBuilding()
     {
-        Debug.Log(
-    $"Intentando construir {selectedBuilding.name} | " +
-    $"Posición: {ghost.transform.position} | " +
-    $"Puede construir: {ghost.CanBuild()}"
+            Debug.Log(
+        $"Intentando construir {selectedBuilding.name} | " +
+        $"Posición: {ghost.transform.position} | " +
+        $"Puede construir: {ghost.CanBuild()}"
 );
-        // 1. Verificar posición
+        //  Verificar posición
         if (!ghost.CanBuild())
         {
             Debug.Log("No se puede construir aquí.");
             return;
         }
 
-        // 2. Obtener costo
+        //  Obtener costo
         int cost = GetBuildCost();
 
-        // 3. Verificar recursos
+        //  Verificar recursos
         if (!Storage.RemoveIron(cost))
         {
             Debug.Log("No hay suficiente Iron.");
             return;
         }
 
-        // 4. Construir
+        //  Construir
         GameObject building = Instantiate(
             selectedBuilding,
             ghost.transform.position,
@@ -171,7 +186,7 @@ public class BuildManager : MonoBehaviour
             "Construido: " + building.name
         );
 
-        // 5. Actualizar conexiones
+        // Actualizar conexiones
         ConveyorMk1[] conveyors =
             FindObjectsByType<ConveyorMk1>();
 
@@ -212,5 +227,71 @@ public class BuildManager : MonoBehaviour
 
         return 0;
     }
+
+    private void ToggleDemolishMode()
+    {
+        demolishMode = !demolishMode;
+
+        if (demolishMode)
+        {
+            buildMode = false;
+
+            if (ghost != null)
+                ghost.gameObject.SetActive(false);
+        }
+
+        Debug.Log(
+            $"Demolish Mode: {demolishMode}"
+        );
+    }
+
+    private void DemolishBuilding()
+    {
+        Ray ray = Camera.main.ScreenPointToRay(
+            Input.mousePosition
+        );
+
+        if (!Physics.Raycast(ray, out RaycastHit hit, 500f))
+            return;
+
+        GameObject target = hit.collider.gameObject;
+
+        Transform building = target.transform;
+
+        while (building != null &&
+               !building.CompareTag("Building"))
+        {
+            building = building.parent;
+        }
+
+        if (building == null)
+        {
+            Debug.Log("No se encontró un edificio.");
+            return;
+        }
+
+        Debug.Log("Demoliendo: " + building.name);
+
+        Destroy(building.gameObject);
+
+        Debug.Log(
+            "Demoliendo: " + target.name
+        );
+
+        Destroy(target);
+    }
+
+    private void CancelBuildMode()
+    {
+        buildMode = false;
+        demolishMode = false;
+
+        if (ghost != null)
+            ghost.gameObject.SetActive(false);
+
+        Debug.Log("Modo construcción/demolición cancelado.");
+    }
+
     
+
 }

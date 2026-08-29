@@ -4,11 +4,12 @@ public class GhostBuilding : MonoBehaviour
 {
     private Camera cam;
 
-    [Header("Ground")]
+    private Bounds buildingBounds;
+    private Renderer[] ghostRenderers;
+
     [SerializeField]
     private LayerMask groundMask;
 
-    [Header("Ghost")]
     [SerializeField]
     private Renderer ghostRenderer;
 
@@ -17,6 +18,7 @@ public class GhostBuilding : MonoBehaviour
 
     [SerializeField]
     private Color invalidColor = Color.red;
+
 
     private void Start()
     {
@@ -34,11 +36,11 @@ public class GhostBuilding : MonoBehaviour
 
         if (CanBuild())
         {
-            ghostRenderer.material.color = validColor;
+            SetGhostColor(validColor);
         }
         else
         {
-            ghostRenderer.material.color = invalidColor;
+            SetGhostColor(invalidColor);
         }
     }
 
@@ -68,38 +70,38 @@ public class GhostBuilding : MonoBehaviour
 
     public bool CanBuild()
     {
-        Collider[] colliders =
-            GetComponentsInChildren<Collider>();
+        Vector3 center =
+            transform.position +
+            (buildingBounds.center - transform.position);
 
-        foreach (Collider collider in colliders)
+        Vector3 halfExtents = buildingBounds.extents;
+
+        Collider[] hits = Physics.OverlapBox(
+            center,
+            halfExtents,
+            transform.rotation
+        );
+
+        foreach (Collider hit in hits)
         {
-            Collider[] hits = Physics.OverlapBox(
-                collider.bounds.center,
-                collider.bounds.extents,
-                transform.rotation
-            );
-
-            foreach (Collider hit in hits)
+            if (hit.CompareTag("Building"))
             {
-                if (hit.transform.IsChildOf(transform))
-                    continue;
-
-                if (hit.CompareTag("Building"))
-                    return false;
+                return false;
             }
         }
 
         return true;
     }
+
     public void SetBuilding(GameObject prefab)
     {
-        // Eliminar la apariencia anterior
+        // Eliminar la representación anterior
         foreach (Transform child in transform)
         {
             Destroy(child.gameObject);
         }
 
-        // Crear la apariencia del nuevo edificio
+        // Crear representación visual del edificio seleccionado
         GameObject visual = Instantiate(
             prefab,
             transform.position,
@@ -107,24 +109,57 @@ public class GhostBuilding : MonoBehaviour
             transform
         );
 
-        // Desactivar scripts del edificio real
-        MonoBehaviour[] scripts =
-            visual.GetComponentsInChildren<MonoBehaviour>();
+        visual.name = "GhostVisual";
 
-        foreach (MonoBehaviour script in scripts)
+        ghostRenderers =
+            visual.GetComponentsInChildren<Renderer>();
+
+        // Desactivar scripts del edificio
+        foreach (MonoBehaviour component in
+                 visual.GetComponentsInChildren<MonoBehaviour>())
         {
-            script.enabled = false;
+            component.enabled = false;
         }
 
-        // Buscar Renderer
-        ghostRenderer =
-            visual.GetComponentInChildren<Renderer>();
-
-        if (ghostRenderer == null)
+        // Desactivar Rigidbody
+        foreach (Rigidbody rb in
+                 visual.GetComponentsInChildren<Rigidbody>())
         {
-            Debug.LogWarning(
-                "El prefab no tiene Renderer: " +
-                prefab.name);
+            rb.isKinematic = true;
+        }
+
+        // Desactivar colliders del Ghost
+        foreach (Collider collider in
+                 visual.GetComponentsInChildren<Collider>())
+        {
+            collider.enabled = false;
+        }
+
+        // Obtener el tamaño real del edificio
+        Collider[] colliders =
+            prefab.GetComponentsInChildren<Collider>();
+
+        if (colliders.Length > 0)
+        {
+            Bounds bounds = colliders[0].bounds;
+
+            foreach (Collider collider in colliders)
+            {
+                bounds.Encapsulate(collider.bounds);
+            }
+
+            buildingBounds = bounds;
+        }
+    }
+
+    private void SetGhostColor(Color color)
+    {
+        if (ghostRenderers == null)
+            return;
+
+        foreach (Renderer renderer in ghostRenderers)
+        {
+            renderer.material.color = color;
         }
     }
 }
